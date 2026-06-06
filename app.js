@@ -2154,23 +2154,6 @@ function populateSettingsForm() {
     accentColorInput.value = workspaceConfig.accentColor || '#0078d4';
   }
 
-  // Integrations configs
-  document.getElementById('integration-plex-url').value = integrationConfigs.plexUrl || '';
-  document.getElementById('integration-plex-token').value = integrationConfigs.plexToken || '';
-  document.getElementById('integration-tautulli-url').value = integrationConfigs.tautulliUrl || '';
-  document.getElementById('integration-tautulli-key').value = integrationConfigs.tautulliKey || '';
-  document.getElementById('integration-sonarr-url').value = integrationConfigs.sonarrUrl || '';
-  document.getElementById('integration-sonarr-key').value = integrationConfigs.sonarrKey || '';
-  document.getElementById('integration-radarr-url').value = integrationConfigs.radarrUrl || '';
-  document.getElementById('integration-radarr-key').value = integrationConfigs.radarrKey || '';
-  document.getElementById('integration-overseerr-url').value = integrationConfigs.overseerrUrl || '';
-  document.getElementById('integration-overseerr-key').value = integrationConfigs.overseerrKey || '';
-  document.getElementById('integration-qbittorrent-url').value = integrationConfigs.qbittorrentUrl || '';
-  document.getElementById('integration-qbittorrent-user').value = integrationConfigs.qbittorrentUser || '';
-  document.getElementById('integration-qbittorrent-pass').value = integrationConfigs.qbittorrentPass || '';
-  if (document.getElementById('integration-cf-worker-url')) {
-    document.getElementById('integration-cf-worker-url').value = integrationConfigs.cfWorkerUrl || '';
-  }
 }
 
 function applyWorkspaceConfig(config) {
