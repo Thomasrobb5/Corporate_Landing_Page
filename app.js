@@ -356,7 +356,7 @@ let workspaceConfig = {
   showClock: true,
   showNotepad: true,
   showWeather: true,
-  showResources: true,
+
   showBookmarks: true,
   weatherCity: 'London',
   weatherState: 'sunny',
@@ -1916,7 +1916,7 @@ function initSettingsModal() {
       workspaceConfig.showClock = document.getElementById('settings-toggle-clock').checked;
       workspaceConfig.showNotepad = document.getElementById('settings-toggle-notepad').checked;
       workspaceConfig.showWeather = document.getElementById('settings-toggle-weather').checked;
-      workspaceConfig.showResources = document.getElementById('settings-toggle-resources').checked;
+
       workspaceConfig.showBookmarks = document.getElementById('settings-toggle-bookmarks').checked;
 
       // Integration forms
@@ -2095,7 +2095,7 @@ function populateSettingsForm() {
   document.getElementById('settings-toggle-clock').checked = workspaceConfig.showClock !== false;
   document.getElementById('settings-toggle-notepad').checked = workspaceConfig.showNotepad !== false;
   document.getElementById('settings-toggle-weather').checked = workspaceConfig.showWeather !== false;
-  document.getElementById('settings-toggle-resources').checked = workspaceConfig.showResources !== false;
+
   document.getElementById('settings-toggle-bookmarks').checked = workspaceConfig.showBookmarks !== false;
 
   // Active theme highlighting
@@ -2212,7 +2212,7 @@ function applyWorkspaceConfig(config) {
     if (widget.type === 'clock' && config.showClock === false) isVisible = false;
     else if (widget.type === 'notepad' && config.showNotepad === false) isVisible = false;
     else if (widget.type === 'weather' && config.showWeather === false) isVisible = false;
-    else if (widget.type === 'resources' && config.showResources === false) isVisible = false;
+
     else if (widget.type === 'bookmarks' && config.showBookmarks === false) isVisible = false;
     
     el.style.display = isVisible ? '' : 'none';
