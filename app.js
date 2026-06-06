@@ -362,7 +362,7 @@ let workspaceConfig = {
   weatherState: 'sunny',
   bgPattern: 'none',
   showBlobs: true,
-  theme: 'theme-midnight-nebula',
+  theme: 'theme-corporate-azure',
   themeFont: 'default',
   glassBlur: '20px',
   blobOpacity: '0.45',
@@ -2105,7 +2105,7 @@ function populateSettingsForm() {
   document.getElementById('settings-toggle-bookmarks').checked = workspaceConfig.showBookmarks !== false;
 
   // Active theme highlighting
-  const activeTheme = workspaceConfig.theme || 'theme-midnight-nebula';
+  const activeTheme = workspaceConfig.theme || 'theme-corporate-azure';
   const themeBtns = document.querySelectorAll('.theme-selector-item');
   themeBtns.forEach(btn => {
     btn.classList.toggle('selected', btn.getAttribute('data-select-theme') === activeTheme);
@@ -2208,7 +2208,7 @@ function applyWorkspaceConfig(config) {
   });
 
   // Apply general Theme body class
-  document.body.className = config.theme || 'theme-midnight-nebula';
+  document.body.className = config.theme || 'theme-corporate-azure';
   if (editModeActive) document.body.classList.add('edit-active');
 
   // Set visual properties on root
@@ -3862,9 +3862,10 @@ function buildNotepadWidget(widget, container, statusEl) {
 }
 
 function buildThemeWidget(widget, container) {
-  const savedTheme = localStorage.getItem('launchpad_active_theme') || 'theme-midnight-nebula';
+  const savedTheme = localStorage.getItem('launchpad_active_theme') || 'theme-corporate-azure';
   container.innerHTML = `
     <div class="theme-options">
+      <button class="theme-btn ${savedTheme==='theme-corporate-azure'?'active':''}" data-theme="theme-corporate-azure" style="background: linear-gradient(135deg, #0284c7, #2563eb);" title="Corporate Azure"></button>
       <button class="theme-btn ${savedTheme==='theme-midnight-nebula'?'active':''}" data-theme="theme-midnight-nebula" style="background: linear-gradient(135deg, #4f46e5, #db2777);" title="Midnight Nebula"></button>
       <button class="theme-btn ${savedTheme==='theme-aurora-borealis'?'active':''}" data-theme="theme-aurora-borealis" style="background: linear-gradient(135deg, #059669, #0891b2);" title="Aurora Borealis"></button>
       <button class="theme-btn ${savedTheme==='theme-solar-eclipse'?'active':''}" data-theme="theme-solar-eclipse" style="background: linear-gradient(135deg, #d97706, #dc2626);" title="Solar Eclipse"></button>
