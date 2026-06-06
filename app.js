@@ -439,7 +439,6 @@ const DEFAULT_WIDGETS = [
   { id: 'widget-notepad', type: 'notepad', title: 'Notepad', colSpan: 1, settings: {} },
   { id: 'widget-theme', type: 'theme', title: 'Workspace Style', colSpan: 1, settings: {} },
   { id: 'widget-weather', type: 'weather', title: 'Weather', colSpan: 1, settings: { city: 'London', state: 'sunny' } },
-  { id: 'widget-resources', type: 'resources', title: 'System Resources', colSpan: 1, settings: {} },
   { id: 'widget-bookmarks', type: 'bookmarks', title: 'Quick Bookmarks', colSpan: 1, settings: {} }
 ];
 
@@ -2979,7 +2978,6 @@ function renderSidebarWidgets(widgets) {
     else if (widget.type === 'notepad') iconClass = 'fa-note-sticky';
     else if (widget.type === 'theme') iconClass = 'fa-palette';
     else if (widget.type === 'weather') iconClass = 'fa-cloud-sun';
-    else if (widget.type === 'resources') iconClass = 'fa-microchip';
     else if (widget.type === 'bookmarks') iconClass = 'fa-bookmark';
     else if (widget.type === 'todo') iconClass = 'fa-list-check';
     else if (widget.type === 'countdown') iconClass = 'fa-stopwatch';
@@ -3051,7 +3049,6 @@ function buildWidgetBody(widget, container, statusEl) {
   else if (widget.type === 'notepad') buildNotepadWidget(widget, container, statusEl);
   else if (widget.type === 'theme') buildThemeWidget(widget, container);
   else if (widget.type === 'weather') buildWeatherWidget(widget, container, statusEl);
-  else if (widget.type === 'resources') buildResourcesWidget(widget, container);
   else if (widget.type === 'bookmarks') buildBookmarksWidget(widget, container);
   else if (widget.type === 'todo') buildTodoWidget(widget, container);
   else if (widget.type === 'countdown') buildCountdownWidget(widget, container);
@@ -3930,45 +3927,6 @@ function buildWeatherWidget(widget, container, statusEl) {
   `;
 }
 
-function buildResourcesWidget(widget, container) {
-  container.innerHTML = `
-    <div class="resource-gauges-container" style="margin-top: 5px;">
-      <div class="resource-gauge-wrapper resource-cpu">
-        <div class="resource-svg-container">
-          <svg viewBox="0 0 100 100">
-            <circle cx="50" cy="50" r="40" class="resource-circle-bg"></circle>
-            <circle cx="50" cy="50" r="40" class="resource-circle-val cpu-circle-dynamic" stroke-dasharray="251.2" stroke-dashoffset="251.2"></circle>
-          </svg>
-          <div class="resource-text cpu-val-dynamic">0%</div>
-        </div>
-        <span class="resource-label">CPU</span>
-      </div>
-      
-      <div class="resource-gauge-wrapper resource-mem">
-        <div class="resource-svg-container">
-          <svg viewBox="0 0 100 100">
-            <circle cx="50" cy="50" r="40" class="resource-circle-bg"></circle>
-            <circle cx="50" cy="50" r="40" class="resource-circle-val ram-circle-dynamic" stroke-dasharray="251.2" stroke-dashoffset="251.2"></circle>
-          </svg>
-          <div class="resource-text ram-val-dynamic">0%</div>
-        </div>
-        <span class="resource-label">RAM</span>
-      </div>
-      
-      <div class="resource-gauge-wrapper resource-net">
-        <div class="resource-svg-container">
-          <svg viewBox="0 0 100 100">
-            <circle cx="50" cy="50" r="40" class="resource-circle-bg"></circle>
-            <circle cx="50" cy="50" r="40" class="resource-circle-val net-circle-dynamic" stroke-dasharray="251.2" stroke-dashoffset="251.2"></circle>
-          </svg>
-          <div class="resource-text net-val-dynamic">0 Mbps</div>
-        </div>
-        <span class="resource-label">NET</span>
-      </div>
-    </div>
-  `;
-}
-
 function buildBookmarksWidget(widget, container) {
   const listEl = document.createElement('div');
   listEl.className = 'bookmarks-list';
@@ -4517,103 +4475,6 @@ function updateAllClocks() {
   });
 }
 
-let lastCpuTime = performance.now();
-
-function updateDynamicResources() {
-  const currentTime = performance.now();
-  const elapsed = currentTime - lastCpuTime;
-  lastCpuTime = currentTime;
-  
-  const lag = Math.max(0, elapsed - 1000);
-  const cpuPercent = Math.min(95, Math.max(3, Math.round(5 + (lag / 1.5))));
-  const cores = navigator.hardwareConcurrency ? `${navigator.hardwareConcurrency} Cores` : '';
-  const cpuLabelText = `${cpuPercent}%`;
-
-  let ramPercent = 42;
-  let ramLabelText = '42 MB';
-  if (window.performance && performance.memory) {
-    const used = performance.memory.usedJSHeapSize;
-    const limit = performance.memory.jsHeapLimit;
-    ramPercent = Math.min(100, Math.max(1, Math.round((used / limit) * 100)));
-    const mbUsed = Math.round(used / (1024 * 1024));
-    
-    if (navigator.deviceMemory) {
-      ramLabelText = `${mbUsed}MB / ${navigator.deviceMemory}GB`;
-    } else {
-      ramLabelText = `${mbUsed} MB`;
-    }
-  } else {
-    const fallbackMock = Math.floor(18 + Math.random() * 5);
-    ramPercent = fallbackMock;
-    if (navigator.deviceMemory) {
-      ramLabelText = `${fallbackMock}MB / ${navigator.deviceMemory}GB`;
-    } else {
-      ramLabelText = `${fallbackMock} MB`;
-    }
-  }
-
-  let netSpeed = 50;
-  let netPercent = 50;
-  let netLabelText = '50 Mbps';
-  
-  if (navigator.connection && navigator.connection.downlink) {
-    netSpeed = navigator.connection.downlink;
-    netPercent = Math.min(100, Math.round((netSpeed / 100) * 100));
-    netLabelText = `${netSpeed} Mbps`;
-  } else {
-    const fallbackSpeed = Math.floor(45 + Math.random() * 20);
-    netPercent = Math.round((fallbackSpeed / 100) * 100);
-    netLabelText = `${fallbackSpeed} Mbps`;
-  }
-
-  const pingStart = performance.now();
-  fetch(window.location.href, { method: 'HEAD', cache: 'no-store' })
-    .then(() => {
-      const pingMs = Math.round(performance.now() - pingStart);
-      updateResourceUI(netLabelText + ` (${pingMs}ms)`, cpuPercent, cpuLabelText, ramPercent, ramLabelText, netPercent, cores);
-    })
-    .catch(() => {
-      updateResourceUI(netLabelText, cpuPercent, cpuLabelText, ramPercent, ramLabelText, netPercent, cores);
-    });
-}
-
-function updateResourceUI(netLabelText, cpuPercent, cpuLabelText, ramPercent, ramLabelText, netPercent, cores) {
-  const nowTime = Date.now();
-  
-  userWidgets.forEach(widget => {
-    if (widget.type !== 'resources') return;
-    
-    const cardEl = document.getElementById(widget.id);
-    if (!cardEl) return;
-    
-    const settings = widget.settings || {};
-    const freq = settings.freq || 3000;
-    const lastUpdate = cardEl.dataset.lastUpdate ? parseInt(cardEl.dataset.lastUpdate, 10) : 0;
-    
-    if (nowTime - lastUpdate < freq) return;
-    cardEl.dataset.lastUpdate = nowTime;
-    
-    const cpuCircle = cardEl.querySelector('.cpu-circle-dynamic');
-    const ramCircle = cardEl.querySelector('.ram-circle-dynamic');
-    const netCircle = cardEl.querySelector('.net-circle-dynamic');
-    
-    if (cpuCircle) updateCircularGauge(cpuCircle, cpuPercent);
-    if (ramCircle) updateCircularGauge(ramCircle, ramPercent);
-    if (netCircle) updateCircularGauge(netCircle, netPercent);
-    
-    const cpuVal = cardEl.querySelector('.cpu-val-dynamic');
-    const ramVal = cardEl.querySelector('.ram-val-dynamic');
-    const netVal = cardEl.querySelector('.net-val-dynamic');
-    
-    if (cpuVal) {
-      cpuVal.textContent = cpuLabelText;
-      if (cores) cpuVal.title = `${cores} detected`;
-    }
-    if (ramVal) ramVal.textContent = ramLabelText;
-    if (netVal) netVal.textContent = netLabelText;
-  });
-}
-
 function tickCountdowns() {
   userWidgets.forEach(widget => {
     if (widget.type !== 'countdown') return;
@@ -4666,8 +4527,6 @@ function initGlobalTimers() {
   updateAllClocks();
   setInterval(updateAllClocks, 1000);
   
-  updateDynamicResources();
-  setInterval(updateDynamicResources, 2500);
   
   tickCountdowns();
   setInterval(tickCountdowns, 1000);
@@ -4681,7 +4540,6 @@ function runWidgetInitializers() {
     startM365PingLoop();
   } else {
     updateAllClocks();
-    updateDynamicResources();
     tickCountdowns();
     updateAllDiskWidgets();
   }
@@ -4735,8 +4593,6 @@ function openWidgetModalForEdit(index) {
     document.getElementById('widget-weather-city').value = settings.city || '';
     document.getElementById('widget-weather-state').value = settings.state || 'sunny';
     document.getElementById('widget-weather-unit').value = settings.unit || 'C';
-  } else if (widget.type === 'resources') {
-    document.getElementById('widget-resources-freq').value = settings.freq || '3000';
   } else if (widget.type === 'bookmarks') {
     document.getElementById('widget-bookmarks-cols').value = settings.cols || '1';
     document.getElementById('widget-bookmarks-icons').checked = settings.showIcons !== false;
@@ -4822,8 +4678,6 @@ function initWidgetModalEvents() {
         settings.city = document.getElementById('widget-weather-city').value.trim() || 'London';
         settings.state = document.getElementById('widget-weather-state').value;
         settings.unit = document.getElementById('widget-weather-unit').value || 'C';
-      } else if (type === 'resources') {
-        settings.freq = parseInt(document.getElementById('widget-resources-freq').value, 10) || 3000;
       } else if (type === 'bookmarks') {
         settings.cols = parseInt(document.getElementById('widget-bookmarks-cols').value, 10) || 1;
         settings.showIcons = document.getElementById('widget-bookmarks-icons').checked;
