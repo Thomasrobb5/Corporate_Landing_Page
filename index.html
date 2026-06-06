@@ -1,0 +1,1086 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Corporate Launchpad Dashboard for IT Technicians.">
+  <meta name="author" content="Thomas Robb">
+  <title>Corporate Launchpad</title>
+  <link rel="icon" type="image/png" href="favicon.png">
+
+  <!-- Google Fonts: Outfit & Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- FontAwesome Free Icons CDN -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+  <!-- Premium Stylesheet -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="theme-midnight-nebula">
+
+  <!-- macOS Top Menu Bar -->
+  <div class="mac-menu-bar">
+    <div class="mac-menu-left">
+      <i class="fa-brands fa-apple mac-menu-item apple-logo"></i>
+      <span class="workspace-label mac-menu-item active-app">Thomas's Workspace</span>
+      <button id="edit-mode-btn" class="mac-menu-item" style="background: none; border: none; color: inherit; font: inherit; padding: 0; cursor: pointer; display: flex; align-items: center; gap: 6px;">
+        <i class="fa-solid fa-sliders"></i> Edit Workspace
+      </button>
+      <button id="workspace-settings-btn" class="mac-menu-item" style="background: none; border: none; color: inherit; font: inherit; padding: 0; cursor: pointer; display: flex; align-items: center; gap: 6px;"><i class="fa-solid fa-gear"></i> Settings</button>
+    </div>
+    
+    <div class="mac-menu-center">
+      <div class="mode-slider-container">
+        <input type="checkbox" id="work-mode-toggle" class="mode-slider-checkbox">
+        <label for="work-mode-toggle" class="mode-slider-label">
+          <span class="mode-slider-pill"></span>
+          <span class="mode-slider-text personal-text"><i class="fa-solid fa-house-user"></i> Personal</span>
+          <span class="mode-slider-text work-text"><i class="fa-solid fa-briefcase"></i> Work</span>
+        </label>
+      </div>
+    </div>
+    <div class="mac-menu-right">
+      <span id="menu-time" class="mac-menu-item"></span>
+      <span id="menu-date" class="mac-menu-item"></span>
+    </div>
+  </div>
+
+  <!-- Animated Glassmorphic Background Blobs -->
+  <div class="bg-blobs" id="bg-blobs">
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+    <div class="blob blob-3"></div>
+  </div>
+
+  <!-- Dynamic Background Pattern Overlay -->
+  <div id="bg-pattern-overlay" class="bg-pattern-overlay"></div>
+
+  <div class="dashboard-container">
+    <!-- Header Welcome Bar -->
+    <header class="dashboard-header">
+      <div class="greeting-container">
+        <h1 id="greeting">Welcome back</h1>
+        <p class="subtitle">Your corporate workspace and IT operations launchpad.</p>
+      </div>
+    </header>
+
+    <!-- Main Grid Layout -->
+    <main class="dashboard-layout">
+      
+      <!-- Main Content (App Cards divided by Groups) -->
+      <section class="main-content">
+        <!-- Search bar with glassmorphic design -->
+        <div class="search-container">
+          <i class="fa-solid fa-magnifying-glass search-icon"></i>
+          <input type="text" id="search-input" placeholder="Search applications, descriptions, or type '/' for commands..." autocomplete="off">
+        </div>
+
+        <div class="dashboard-actions-row">
+          <button id="add-group-btn" class="btn-macos btn-macos-primary" style="display: none; margin-bottom: 20px; align-items: center; gap: 8px;">
+            <i class="fa-solid fa-folder-plus"></i> Add Category
+          </button>
+        </div>
+
+        <!-- Dashboard Groups Container -->
+        <div id="dashboard-groups" class="dashboard-groups-container"></div>
+
+        <!-- Search Empty State -->
+        <div id="no-results" class="no-results-card">
+          <i class="fa-solid fa-circle-question"></i>
+          <h4>No applications found</h4>
+          <p>We couldn't find anything matching your search term. Try checking for typos or clear your filter.</p>
+        </div>
+      </section>
+
+      <!-- Sidebar Utilities -->
+      <aside class="sidebar" id="sidebar-container">
+        <div id="sidebar-widgets" class="sidebar-widgets-grid" style="display: grid; grid-template-columns: repeat(var(--sidebar-cols, 1), 1fr); gap: 24px; width: 100%;"></div>
+        <button id="add-widget-btn" class="app-card add-card" style="display: none; min-height: 80px; padding: 20px; border-radius: 20px; flex-direction: row; gap: 10px; align-items: center; justify-content: center; width: 100%;">
+          <div class="add-card-icon" style="width: 32px; height: 32px; font-size: 1rem; border-radius: 8px;">
+            <i class="fa-solid fa-plus"></i>
+          </div>
+          <span class="add-card-title" style="font-size: 0.95rem;">Add Widget</span>
+        </button>
+      </aside>
+
+    </main>
+  </div>
+
+  <!-- macOS Floating Dock Container -->
+  <div class="dock-container" role="navigation" aria-label="App Dock">
+    <div class="dock" id="dock-container"></div>
+  </div>
+
+  <!-- Customization Editor Modal (Hidden by Default) -->
+  <div id="editor-modal" class="modal-overlay" style="display: none;">
+    <div class="modal-container">
+      <div class="modal-header">
+        <h3 id="modal-title">Edit Application</h3>
+        <button type="button" class="modal-close-btn" onclick="closeModal()"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <form id="editor-form" onsubmit="event.preventDefault();">
+        <div class="form-group">
+          <label for="modal-app-title">App Title</label>
+          <input type="text" id="modal-app-title" placeholder="e.g. My Application" required>
+        </div>
+        <div class="form-group">
+          <label for="modal-app-desc">App Description</label>
+          <input type="text" id="modal-app-desc" placeholder="e.g. Live tracking and analytics dashboard" required>
+        </div>
+        <div class="form-group">
+          <label for="modal-app-url">App URL</label>
+          <input type="url" id="modal-app-url" placeholder="https://example.com" required>
+        </div>
+        <div class="form-row-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+          <div class="form-group">
+            <label for="modal-app-group">Category Group</label>
+            <select id="modal-app-group"></select>
+          </div>
+          <div class="color-selector-wrapper">
+            <label for="modal-app-color">Accent Color</label>
+            <input type="color" id="modal-app-color" class="color-dot-input" value="#a855f7" style="margin-top: 5px;">
+          </div>
+        </div>
+        <div class="form-row-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 10px;">
+          <div class="form-group">
+            <label for="modal-app-colspan">Width (Cols)</label>
+            <select id="modal-app-colspan">
+              <option value="1">1 Column</option>
+              <option value="2">2 Columns</option>
+              <option value="3">3 Columns</option>
+              <option value="4">4 Columns</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="modal-app-rowspan">Height (Rows)</label>
+            <select id="modal-app-rowspan">
+              <option value="1">1 Row</option>
+              <option value="2">2 Rows</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 10px;">
+          <div class="form-group">
+            <label for="modal-app-size">Card Sizing Style</label>
+            <select id="modal-app-size">
+              <option value="default">Use Global Setting</option>
+              <option value="compact">Compact</option>
+              <option value="balanced">Balanced</option>
+              <option value="expanded">Expanded</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="modal-app-icon">Icon Glyph</label>
+            <select id="modal-app-icon">
+              <option value="fa-film">Film (fa-film)</option>
+              <option value="fa-chart-line">Chart (fa-chart-line)</option>
+              <option value="fa-atom">Atom (fa-atom)</option>
+              <option value="fa-skull">Skull (fa-skull)</option>
+              <option value="fa-bolt-lightning">Bolt (fa-bolt-lightning)</option>
+              <option value="fa-pen-nib">Pen (fa-pen-nib)</option>
+              <option value="fa-code">Code (fa-code)</option>
+              <option value="fa-globe">Globe (fa-globe)</option>
+              <option value="fa-play">Play (fa-play)</option>
+              <option value="fa-download">Download (fa-download)</option>
+              <option value="fa-tv">TV (fa-tv)</option>
+              <option value="fa-user-plus">User Plus (fa-user-plus)</option>
+              <option value="fa-search">Search (fa-search)</option>
+              <option value="fa-chart-pie">Chart Pie (fa-chart-pie)</option>
+              <option value="fa-network-wired">Network (fa-network-wired)</option>
+              <option value="fa-shield-halved">Shield (fa-shield-halved)</option>
+              <option value="fa-server">Server (fa-server)</option>
+              <option value="fa-arrow-down-up-lock">Torrent (fa-arrow-down-up-lock)</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row-grid" style="display: grid; grid-template-columns: 1fr; gap: 12px; margin-top: 10px;">
+          <div class="form-group" style="display: flex; align-items: center; height: 100%; gap: 14px; flex-wrap: wrap;">
+            <label style="display: flex; align-items: center; gap: 6px; font-weight: normal; cursor: pointer; margin-top: 15px;">
+              <input type="checkbox" id="modal-app-ping" checked> Health check (Ping)
+            </label>
+            <label style="display: flex; align-items: center; gap: 6px; font-weight: normal; cursor: pointer; margin-top: 15px;">
+              <input type="checkbox" id="modal-app-favorite"> Pin to Favorites
+            </label>
+          </div>
+        </div>
+        <div class="modal-actions" style="margin-top: 24px;">
+          <button type="button" id="modal-cancel-btn" class="btn-macos btn-macos-secondary">Cancel</button>
+          <button type="submit" id="modal-save-btn" class="btn-macos btn-macos-primary">Save App</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Workspace Settings Modal (Hidden by Default, Tabbed Layout) -->
+  <div id="settings-modal" class="modal-overlay" style="display: none;">
+    <div class="modal-container settings-split-layout">
+      <!-- Sidebar -->
+      <div class="settings-sidebar">
+        <div class="settings-sidebar-header">
+          <h3>Workspace Settings</h3>
+        </div>
+        <div class="vertical-tabs">
+          <button type="button" class="modal-tab-btn active" data-tab="settings-tab-general">
+            <i class="fa-solid fa-gear"></i> General
+          </button>
+          <button type="button" class="modal-tab-btn" data-tab="settings-tab-themes">
+            <i class="fa-solid fa-palette"></i> Appearance
+          </button>
+
+          <button type="button" class="modal-tab-btn" data-tab="settings-tab-backup">
+            <i class="fa-solid fa-database"></i> Backup / Restore
+          </button>
+        </div>
+      </div>
+
+      <!-- Main Panel -->
+      <div class="settings-main-panel">
+        <div class="modal-header">
+          <h3 id="settings-panel-title">General</h3>
+          <button type="button" class="modal-close-btn" id="settings-close-btn"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+
+        <form id="settings-form" onsubmit="event.preventDefault();">
+          
+          <!-- Tab 1: General -->
+          <div id="settings-tab-general" class="settings-tab-content active">
+            
+            <div class="settings-card-group">
+              <div class="settings-card-group-title">Workspace Identity</div>
+              <div class="form-row-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                <div class="form-group">
+                  <label for="settings-username">Your Name</label>
+                  <input type="text" id="settings-username" placeholder="Thomas" required style="width:100%;">
+                </div>
+                <div class="form-group">
+                  <label for="settings-workspace-name">Workspace Title</label>
+                  <input type="text" id="settings-workspace-name" placeholder="Thomas's Workspace" required style="width:100%;">
+                </div>
+              </div>
+            </div>
+
+            <div class="settings-card-group">
+              <div class="settings-card-group-title">Dashboard Grid</div>
+              <div class="form-group">
+                <label for="settings-grid-cols">Grid Columns</label>
+                <select id="settings-grid-cols">
+                  <option value="auto">Auto-fit</option>
+                  <option value="2">2 Columns</option>
+                  <option value="3">3 Columns</option>
+                  <option value="4">4 Columns</option>
+                </select>
+              </div>
+              <div class="form-row-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                <div class="form-group">
+                  <label for="settings-card-size">Card Sizing</label>
+                  <select id="settings-card-size">
+                    <option value="compact">Compact</option>
+                    <option value="balanced">Balanced</option>
+                    <option value="expanded">Expanded</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label for="settings-card-gap">Card Spacing (Gap)</label>
+                  <select id="settings-card-gap">
+                    <option value="tight">Tight</option>
+                    <option value="comfortable">Comfortable</option>
+                    <option value="spacious">Spacious</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <div class="settings-card-group">
+              <div class="settings-card-group-title">Sidebar & Widgets</div>
+              <div class="form-row-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                <div class="form-group">
+                  <label for="settings-sidebar-pos">Sidebar Position</label>
+                  <select id="settings-sidebar-pos">
+                    <option value="right">Sidebar Right</option>
+                    <option value="left">Sidebar Left</option>
+                    <option value="top">Widgets Top</option>
+                    <option value="hidden">Hidden</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label for="settings-sidebar-cols">Sidebar Columns</label>
+                  <select id="settings-sidebar-cols">
+                    <option value="1">1 Column</option>
+                    <option value="2">2 Columns</option>
+                  </select>
+                </div>
+              </div>
+              <div class="form-row-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                <div class="form-group">
+                  <label for="settings-weather-city">Weather City</label>
+                  <input type="text" id="settings-weather-city" placeholder="e.g. New York">
+                </div>
+                <div class="form-group">
+                  <label for="settings-weather-state">Weather Condition</label>
+                  <select id="settings-weather-state">
+                    <option value="sunny">Sunny</option>
+                    <option value="cloudy">Cloudy</option>
+                    <option value="rainy">Rainy</option>
+                    <option value="stormy">Stormy</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <div class="settings-card-group">
+              <div class="settings-card-group-title">Widget Visibility</div>
+              <div class="checkbox-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+                <label style="display: flex; align-items: center; gap: 8px; font-weight: normal; cursor: pointer; margin: 0;">
+                  <input type="checkbox" id="settings-toggle-clock" checked> Clock Widget
+                </label>
+                <label style="display: flex; align-items: center; gap: 8px; font-weight: normal; cursor: pointer; margin: 0;">
+                  <input type="checkbox" id="settings-toggle-notepad" checked> Notepad Widget
+                </label>
+                <label style="display: flex; align-items: center; gap: 8px; font-weight: normal; cursor: pointer; margin: 0;">
+                  <input type="checkbox" id="settings-toggle-weather" checked> Weather Widget
+                </label>
+
+                <label style="display: flex; align-items: center; gap: 8px; font-weight: normal; cursor: pointer; margin: 0;">
+                  <input type="checkbox" id="settings-toggle-bookmarks" checked> Bookmarks Widget
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <!-- Tab 2: Themes & Glow -->
+          <div id="settings-tab-themes" class="settings-tab-content">
+            
+            <div class="settings-card-group">
+              <div class="settings-card-group-title">Workspace Styling & Layout</div>
+              
+              <div class="form-group">
+                <label for="settings-layout-mode">Workspace Layout Mode</label>
+                <select id="settings-layout-mode">
+                  <option value="grid">Classic Grid Layout</option>
+                  <option value="rows">Horizontal Scroll Rows (Netflix-style)</option>
+                  <option value="list">Compact List View</option>
+                </select>
+              </div>
+              
+              <div class="form-row-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                <div class="form-group">
+                  <label for="settings-accent-color">Accent Color Override</label>
+                  <div style="display: flex; gap: 8px; align-items: center;">
+                    <input type="color" id="settings-accent-color" style="width: 45px; height: 34px; padding: 2px; border: 1px solid rgba(255,255,255,0.15); border-radius: 6px; cursor: pointer; background: transparent;">
+                    <button type="button" id="btn-reset-accent" class="btn-macos btn-macos-secondary" style="padding: 6px 10px; font-size: 0.75rem;">Reset Override</button>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label for="settings-theme-font">Workspace Font</label>
+                  <select id="settings-theme-font">
+                    <option value="default">Default (Outfit / Inter)</option>
+                    <option value="'Inter', sans-serif">Clean Sans (Inter)</option>
+                    <option value="'Courier New', Courier, monospace">Monospace Code (Courier)</option>
+                    <option value="'Georgia', serif">Elegant Serif (Georgia)</option>
+                    <option value="'Outfit', sans-serif">Modern Round (Outfit)</option>
+                  </select>
+                </div>
+              </div>
+              
+              <div class="form-row-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                <div class="form-group">
+                  <label for="settings-bg-pattern">Background Pattern</label>
+                  <select id="settings-bg-pattern">
+                    <option value="none">Clean Frosted Glass</option>
+                    <option value="dots">Dotted Matrix</option>
+                    <option value="grid">Cyber Grid Lines</option>
+                    <option value="stripes">Diagonal Stripes</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <div style="display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 4px; color: var(--text-secondary);">
+                    <label for="settings-card-radius" style="margin: 0;">Corner Roundness</label>
+                    <span id="label-card-radius" style="font-weight: 600;">24px</span>
+                  </div>
+                  <input type="range" id="settings-card-radius" min="0" max="32" value="24" style="width: 100%; cursor: pointer;">
+                </div>
+              </div>
+            </div>
+
+            <!-- Casual Themes -->
+            <div class="settings-card-group">
+              <div class="settings-card-group-title">Casual Themes</div>
+              <div class="theme-previews-grid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px;">
+                
+                <button type="button" class="theme-preview-card theme-selector-item" data-select-theme="theme-midnight-nebula">
+                  <div class="theme-preview-colors" style="background: #080c14;">
+                    <div class="theme-preview-blob" style="background: #4f46e5; top: 4px; left: 6px;"></div>
+                    <div class="theme-preview-blob" style="background: #db2777; bottom: 4px; right: 6px;"></div>
+                    <div class="theme-preview-card-mock"></div>
+                  </div>
+                  <div class="theme-preview-name">Midnight Nebula</div>
+                </button>
+
+                <button type="button" class="theme-preview-card theme-selector-item" data-select-theme="theme-aurora-borealis">
+                  <div class="theme-preview-colors" style="background: #021712;">
+                    <div class="theme-preview-blob" style="background: #059669; top: 4px; left: 6px;"></div>
+                    <div class="theme-preview-blob" style="background: #0891b2; bottom: 4px; right: 6px;"></div>
+                    <div class="theme-preview-card-mock"></div>
+                  </div>
+                  <div class="theme-preview-name">Aurora Borealis</div>
+                </button>
+
+                <button type="button" class="theme-preview-card theme-selector-item" data-select-theme="theme-solar-eclipse">
+                  <div class="theme-preview-colors" style="background: #140b03;">
+                    <div class="theme-preview-blob" style="background: #d97706; top: 4px; left: 6px;"></div>
+                    <div class="theme-preview-blob" style="background: #dc2626; bottom: 4px; right: 6px;"></div>
+                    <div class="theme-preview-card-mock"></div>
+                  </div>
+                  <div class="theme-preview-name">Solar Eclipse</div>
+                </button>
+
+                <button type="button" class="theme-preview-card theme-selector-item" data-select-theme="theme-pastel-dream">
+                  <div class="theme-preview-colors" style="background: #faf7f2;">
+                    <div class="theme-preview-blob" style="background: #fed7aa; top: 4px; left: 6px;"></div>
+                    <div class="theme-preview-blob" style="background: #ccfbf1; bottom: 4px; right: 6px;"></div>
+                    <div class="theme-preview-card-mock"></div>
+                  </div>
+                  <div class="theme-preview-name">Pastel Dream</div>
+                </button>
+
+                <button type="button" class="theme-preview-card theme-selector-item" data-select-theme="theme-sunset-breeze">
+                  <div class="theme-preview-colors" style="background: #1d0f1b;">
+                    <div class="theme-preview-blob" style="background: #fda4af; top: 4px; left: 6px;"></div>
+                    <div class="theme-preview-blob" style="background: #3b0764; bottom: 4px; right: 6px;"></div>
+                    <div class="theme-preview-card-mock"></div>
+                  </div>
+                  <div class="theme-preview-name">Sunset Breeze</div>
+                </button>
+
+                <button type="button" class="theme-preview-card theme-selector-item" data-select-theme="theme-cozy-forest">
+                  <div class="theme-preview-colors" style="background: #0f140f;">
+                    <div class="theme-preview-blob" style="background: #3f6212; top: 4px; left: 6px;"></div>
+                    <div class="theme-preview-blob" style="background: #854d0e; bottom: 4px; right: 6px;"></div>
+                    <div class="theme-preview-card-mock"></div>
+                  </div>
+                  <div class="theme-preview-name">Cozy Forest</div>
+                </button>
+
+              </div>
+            </div>
+
+            <!-- Dramatic Themes -->
+            <div class="settings-card-group">
+              <div class="settings-card-group-title">Dramatic Themes</div>
+              <div class="theme-previews-grid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px;">
+                
+                <button type="button" class="theme-preview-card theme-selector-item" data-select-theme="theme-cyberpunk">
+                  <div class="theme-preview-colors" style="background: #0a0110;">
+                    <div class="theme-preview-blob" style="background: #ff007f; top: 4px; left: 6px;"></div>
+                    <div class="theme-preview-blob" style="background: #00f0ff; bottom: 4px; right: 6px;"></div>
+                    <div class="theme-preview-card-mock"></div>
+                  </div>
+                  <div class="theme-preview-name">Cyberpunk Cyber</div>
+                </button>
+
+                <button type="button" class="theme-preview-card theme-selector-item" data-select-theme="theme-synthwave">
+                  <div class="theme-preview-colors" style="background: #100626;">
+                    <div class="theme-preview-blob" style="background: #ff007f; top: 4px; left: 6px;"></div>
+                    <div class="theme-preview-blob" style="background: #ff7c00; bottom: 4px; right: 6px;"></div>
+                    <div class="theme-preview-card-mock"></div>
+                  </div>
+                  <div class="theme-preview-name">Neon Synthwave</div>
+                </button>
+
+                <button type="button" class="theme-preview-card theme-selector-item" data-select-theme="theme-oled-black">
+                  <div class="theme-preview-colors" style="background: #000000;">
+                    <div class="theme-preview-blob" style="background: #39ff14; top: 4px; left: 6px;"></div>
+                    <div class="theme-preview-blob" style="background: #1a1a1a; bottom: 4px; right: 6px;"></div>
+                    <div class="theme-preview-card-mock"></div>
+                  </div>
+                  <div class="theme-preview-name">OLED High-Con</div>
+                </button>
+
+                <button type="button" class="theme-preview-card theme-selector-item" data-select-theme="theme-volcanic">
+                  <div class="theme-preview-colors" style="background: #0b0705;">
+                    <div class="theme-preview-blob" style="background: #ff3c00; top: 4px; left: 6px;"></div>
+                    <div class="theme-preview-blob" style="background: #ff9900; bottom: 4px; right: 6px;"></div>
+                    <div class="theme-preview-card-mock"></div>
+                  </div>
+                  <div class="theme-preview-name">Volcanic Ash</div>
+                </button>
+
+                <button type="button" class="theme-preview-card theme-selector-item" data-select-theme="theme-ice-glacier">
+                  <div class="theme-preview-colors" style="background: #040c16;">
+                    <div class="theme-preview-blob" style="background: #00d2ff; top: 4px; left: 6px;"></div>
+                    <div class="theme-preview-blob" style="background: #ffffff; bottom: 4px; right: 6px;"></div>
+                    <div class="theme-preview-card-mock"></div>
+                  </div>
+                  <div class="theme-preview-name">Glacial Ice</div>
+                </button>
+
+              </div>
+            </div>
+
+            <!-- Professional Themes -->
+            <div class="settings-card-group">
+              <div class="settings-card-group-title">Professional Themes</div>
+              <div class="theme-previews-grid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px;">
+                
+                <button type="button" class="theme-preview-card theme-selector-item" data-select-theme="theme-slate-glass">
+                  <div class="theme-preview-colors" style="background: #0f172a;">
+                    <div class="theme-preview-blob" style="background: #334155; top: 4px; left: 6px;"></div>
+                    <div class="theme-preview-blob" style="background: #475569; bottom: 4px; right: 6px;"></div>
+                    <div class="theme-preview-card-mock"></div>
+                  </div>
+                  <div class="theme-preview-name">Slate Glass</div>
+                </button>
+
+                <button type="button" class="theme-preview-card theme-selector-item" data-select-theme="theme-corporate-azure">
+                  <div class="theme-preview-colors" style="background: #0c131f;">
+                    <div class="theme-preview-blob" style="background: #0078d4; top: 4px; left: 6px;"></div>
+                    <div class="theme-preview-blob" style="background: #106ebe; bottom: 4px; right: 6px;"></div>
+                    <div class="theme-preview-card-mock"></div>
+                  </div>
+                  <div class="theme-preview-name">Corporate Azure</div>
+                </button>
+
+                <button type="button" class="theme-preview-card theme-selector-item" data-select-theme="theme-executive-carbon">
+                  <div class="theme-preview-colors" style="background: #121212;">
+                    <div class="theme-preview-blob" style="background: #2c2c2c; top: 4px; left: 6px;"></div>
+                    <div class="theme-preview-blob" style="background: #1e1e1e; bottom: 4px; right: 6px;"></div>
+                    <div class="theme-preview-card-mock"></div>
+                  </div>
+                  <div class="theme-preview-name">Executive Carbon</div>
+                </button>
+
+                <button type="button" class="theme-preview-card theme-selector-item" data-select-theme="theme-warm-espresso">
+                  <div class="theme-preview-colors" style="background: #17110d;">
+                    <div class="theme-preview-blob" style="background: #8b5a2b; top: 4px; left: 6px;"></div>
+                    <div class="theme-preview-blob" style="background: #d2b48c; bottom: 4px; right: 6px;"></div>
+                    <div class="theme-preview-card-mock"></div>
+                  </div>
+                  <div class="theme-preview-name">Warm Espresso</div>
+                </button>
+
+                <button type="button" class="theme-preview-card theme-selector-item" data-select-theme="theme-minimalist-light">
+                  <div class="theme-preview-colors" style="background: #f3f4f6;">
+                    <div class="theme-preview-blob" style="background: #bfdbfe; top: 4px; left: 6px;"></div>
+                    <div class="theme-preview-blob" style="background: #ddd6fe; bottom: 4px; right: 6px;"></div>
+                    <div class="theme-preview-card-mock"></div>
+                  </div>
+                  <div class="theme-preview-name">Minimalist Light</div>
+                </button>
+
+                <button type="button" class="theme-preview-card theme-selector-item" data-select-theme="theme-retro-terminal">
+                  <div class="theme-preview-colors" style="background: #000c00;">
+                    <div class="theme-preview-blob" style="background: #003300; top: 4px; left: 6px;"></div>
+                    <div class="theme-preview-blob" style="background: #39ff14; bottom: 4px; right: 6px;"></div>
+                    <div class="theme-preview-card-mock"></div>
+                  </div>
+                  <div class="theme-preview-name">Retro Terminal</div>
+                </button>
+
+              </div>
+            </div>
+
+            <!-- Glassmorphic Tuning -->
+            <div class="settings-card-group">
+              <div class="settings-card-group-title">Glassmorphic Tuning</div>
+              
+              <div style="display: flex; flex-direction: column; gap: 12px;">
+                <div>
+                  <div style="display: flex; justify-content: space-between; font-size: 0.75rem; margin-bottom: 4px; color: var(--text-secondary);">
+                    <span>Frosted Glass Blur</span>
+                    <span id="label-glass-blur">20px</span>
+                  </div>
+                  <input type="range" id="settings-glass-blur" min="0" max="40" value="20" style="width: 100%; cursor: pointer;">
+                </div>
+                
+                <div>
+                  <div style="display: flex; justify-content: space-between; font-size: 0.75rem; margin-bottom: 4px; color: var(--text-secondary);">
+                    <span>Background Glow Opacity</span>
+                    <span id="label-blob-opacity">0.45</span>
+                  </div>
+                  <input type="range" id="settings-blob-opacity" min="0" max="1" step="0.05" value="0.45" style="width: 100%; cursor: pointer;">
+                </div>
+
+                <div>
+                  <div style="display: flex; justify-content: space-between; font-size: 0.75rem; margin-bottom: 4px; color: var(--text-secondary);">
+                    <span>Glow Animation Speed</span>
+                    <span id="label-blob-speed">25s</span>
+                  </div>
+                  <input type="range" id="settings-blob-speed" min="5" max="60" value="25" style="width: 100%; cursor: pointer;">
+                </div>
+                
+                <div class="form-group" style="margin-top: 4px;">
+                  <label style="display: flex; align-items: center; gap: 8px; font-weight: normal; cursor: pointer; margin: 0;">
+                    <input type="checkbox" id="settings-toggle-blobs" checked> Enable Background Glow Blobs
+                  </label>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Tab 4: Backup / Restore -->
+          <div id="settings-tab-backup" class="settings-tab-content">
+            
+            <div class="settings-card-group">
+              <div class="settings-card-group-title">Export Settings</div>
+              <div style="text-align: center; padding: 10px 0;">
+                <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 12px; line-height: 1.4;">
+                  Download your entire dashboard layout, custom cards, and categories.
+                </p>
+                <button type="button" id="settings-export-btn" class="btn-macos btn-macos-primary" style="display: inline-flex; align-items: center; gap: 8px;">
+                  <i class="fa-solid fa-file-export"></i> Export Config (.json)
+                </button>
+              </div>
+            </div>
+
+            <div class="settings-card-group">
+              <div class="settings-card-group-title">Import Settings</div>
+              <div style="text-align: center; padding: 10px 0;">
+                <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 12px; line-height: 1.4;">
+                  Restore a previously saved config. <strong>Warning:</strong> This will overwrite all current cards and data.
+                </p>
+                <label for="settings-import-file" class="btn-macos btn-macos-secondary" style="display: inline-flex; align-items: center; gap: 8px; cursor: pointer; margin: 0;">
+                  <i class="fa-solid fa-file-import"></i> Choose Config File
+                </label>
+                <input type="file" id="settings-import-file" accept=".json" style="display: none;">
+              </div>
+            </div>
+          </div>
+
+          <div class="modal-actions" style="margin-top: 24px;">
+            <button type="button" id="settings-cancel-btn" class="btn-macos btn-macos-secondary">Cancel</button>
+            <button type="submit" id="settings-save-btn" class="btn-macos btn-macos-primary">Save Settings</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add/Edit Widget Modal (Hidden by Default) -->
+  <div id="widget-modal" class="modal-overlay" style="display: none;">
+    <div class="modal-container">
+      <div class="modal-header">
+        <h3 id="widget-modal-title">Add Widget</h3>
+        <button type="button" class="modal-close-btn" id="widget-modal-close-btn"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <form id="widget-form" onsubmit="event.preventDefault();">
+        <div class="form-group" id="widget-type-select-group">
+          <label for="widget-type">Widget Type</label>
+          <select id="widget-type">
+            <option value="clock">Digital Clock</option>
+            <option value="notepad">Notepad Notes</option>
+            <option value="theme">Workspace Style Theme Picker</option>
+            <option value="weather">Weather Forecast</option>
+            <option value="bookmarks">Quick Bookmarks</option>
+            <option value="todo">To-Do Checklist</option>
+            <option value="countdown">Countdown Timer</option>
+            <option value="iframe">Iframe Embed Screen</option>
+            <option value="calculator">Calculator</option>
+            <!-- Microsoft 365 Enterprise Widgets -->
+            <option value="m365-status">M365 Service Health Monitor</option>
+            <option value="m365-message-center">M365 Message Center Feed</option>
+            <option value="m365-stats">M365 Tenant Uptime & Stats</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="widget-title-input">Widget Title</label>
+          <input type="text" id="widget-title-input" placeholder="e.g. Notes, Project Countdown" required>
+        </div>
+
+        <div class="form-group">
+          <label for="widget-col-span">Width Span</label>
+          <select id="widget-col-span">
+            <option value="1">1 Column (Normal)</option>
+            <option value="2">2 Columns (Wide)</option>
+          </select>
+        </div>
+
+        <!-- Dynamic inputs shown based on selected widget type -->
+        <div id="widget-config-fields">
+          <!-- Clock Config -->
+          <div class="widget-type-fields field-clock" style="display: none;">
+            <div class="form-group">
+              <label for="widget-clock-timezone">Timezone Offset</label>
+              <select id="widget-clock-timezone">
+                <option value="local">Local Browser Time</option>
+                <option value="0">UTC (GMT)</option>
+                <option value="1">UTC+1 (BST/CET)</option>
+                <option value="-5">UTC-5 (EST)</option>
+                <option value="-8">UTC-8 (PST)</option>
+                <option value="8">UTC+8 (SGT/CST)</option>
+              </select>
+            </div>
+            <div class="form-row-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 10px;">
+              <label style="display: flex; align-items: center; gap: 6px; font-weight: normal; cursor: pointer;">
+                <input type="checkbox" id="widget-clock-format-24" checked> 24-Hour Format
+              </label>
+              <label style="display: flex; align-items: center; gap: 6px; font-weight: normal; cursor: pointer;">
+                <input type="checkbox" id="widget-clock-seconds" checked> Show Seconds
+              </label>
+            </div>
+          </div>
+
+          <!-- Notepad Config -->
+          <div class="widget-type-fields field-notepad" style="display: none;">
+            <div class="form-group">
+              <label for="widget-notepad-height">Editor Height (px)</label>
+              <input type="number" id="widget-notepad-height" placeholder="120" min="80" max="600" value="120">
+            </div>
+            <div class="form-group">
+              <label for="widget-notepad-fontsize">Font Size</label>
+              <select id="widget-notepad-fontsize">
+                <option value="0.8rem">Small (13px)</option>
+                <option value="0.9rem" selected>Medium (15px)</option>
+                <option value="1.05rem">Large (17px)</option>
+                <option value="1.2rem">Extra Large (19px)</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Weather Config -->
+          <div class="widget-type-fields field-weather" style="display: none;">
+            <div class="form-group">
+              <label for="widget-weather-city">City</label>
+              <input type="text" id="widget-weather-city" placeholder="e.g. London">
+            </div>
+            <div class="form-row-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+              <div class="form-group">
+                <label for="widget-weather-state">Default Condition</label>
+                <select id="widget-weather-state">
+                  <option value="sunny">Sunny</option>
+                  <option value="cloudy">Cloudy</option>
+                  <option value="rainy">Rainy</option>
+                  <option value="snowy">Snowy</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="widget-weather-unit">Temp Unit</label>
+                <select id="widget-weather-unit">
+                  <option value="C">Celsius (°C)</option>
+                  <option value="F">Fahrenheit (°F)</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- Bookmarks Config -->
+          <div class="widget-type-fields field-bookmarks" style="display: none;">
+            <div class="form-row-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+              <div class="form-group">
+                <label for="widget-bookmarks-cols">Grid Columns</label>
+                <select id="widget-bookmarks-cols">
+                  <option value="1">1 Column List</option>
+                  <option value="2">2 Columns Grid</option>
+                </select>
+              </div>
+              <div class="form-group" style="display: flex; align-items: center; height: 100%;">
+                <label style="display: flex; align-items: center; gap: 6px; font-weight: normal; cursor: pointer; margin-top: 20px;">
+                  <input type="checkbox" id="widget-bookmarks-icons" checked> Show Favicons
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <!-- Countdown Config -->
+          <div class="widget-type-fields field-countdown" style="display: none;">
+            <div class="form-group">
+              <label for="widget-countdown-date">Target Date & Time</label>
+              <input type="datetime-local" id="widget-countdown-date">
+            </div>
+          </div>
+
+          <!-- Iframe Config -->
+          <div class="widget-type-fields field-iframe" style="display: none;">
+            <div class="form-group">
+              <label for="widget-iframe-url">Embed URL</label>
+              <input type="url" id="widget-iframe-url" placeholder="https://example.com/widget">
+            </div>
+            <div class="form-group">
+              <label for="widget-iframe-height">Widget Height (px)</label>
+              <input type="number" id="widget-iframe-height" placeholder="200" min="100" max="800" value="200">
+            </div>
+          </div>
+
+          <!-- Disk Storage Config -->
+          <div class="widget-type-fields field-disk" style="display: none;">
+            <div class="form-group">
+              <label for="widget-disk-path">Disk Path Filter (Optional)</label>
+              <input type="text" id="widget-disk-path" placeholder="e.g. /Plex_Media (leave empty for all)">
+            </div>
+          </div>
+
+          <!-- M365 Status Monitor Config -->
+          <div class="widget-type-fields field-m365-status" style="display: none;">
+            <div class="form-group">
+              <label style="font-weight: 600; margin-bottom: 6px; display: block;">Select Services to Monitor</label>
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; background: rgba(0,0,0,0.15); padding: 10px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.04);">
+                <label style="display: flex; align-items: center; gap: 6px; font-weight: normal; cursor: pointer; font-size: 0.825rem;">
+                  <input type="checkbox" class="widget-m365-service-check" value="azure" checked> Azure Portal
+                </label>
+                <label style="display: flex; align-items: center; gap: 6px; font-weight: normal; cursor: pointer; font-size: 0.825rem;">
+                  <input type="checkbox" class="widget-m365-service-check" value="teams" checked> MS Teams
+                </label>
+                <label style="display: flex; align-items: center; gap: 6px; font-weight: normal; cursor: pointer; font-size: 0.825rem;">
+                  <input type="checkbox" class="widget-m365-service-check" value="exchange" checked> Exchange Online
+                </label>
+                <label style="display: flex; align-items: center; gap: 6px; font-weight: normal; cursor: pointer; font-size: 0.825rem;">
+                  <input type="checkbox" class="widget-m365-service-check" value="sharepoint" checked> SharePoint Online
+                </label>
+                <label style="display: flex; align-items: center; gap: 6px; font-weight: normal; cursor: pointer; font-size: 0.825rem;">
+                  <input type="checkbox" class="widget-m365-service-check" value="intune" checked> Intune Endpoint
+                </label>
+                <label style="display: flex; align-items: center; gap: 6px; font-weight: normal; cursor: pointer; font-size: 0.825rem;">
+                  <input type="checkbox" class="widget-m365-service-check" value="entra" checked> Entra ID
+                </label>
+                <label style="display: flex; align-items: center; gap: 6px; font-weight: normal; cursor: pointer; font-size: 0.825rem;">
+                  <input type="checkbox" class="widget-m365-service-check" value="onedrive" checked> OneDrive
+                </label>
+                <label style="display: flex; align-items: center; gap: 6px; font-weight: normal; cursor: pointer; font-size: 0.825rem;">
+                  <input type="checkbox" class="widget-m365-service-check" value="powerbi" checked> Power BI
+                </label>
+                <label style="display: flex; align-items: center; gap: 6px; font-weight: normal; cursor: pointer; font-size: 0.825rem; grid-column: span 2;">
+                  <input type="checkbox" class="widget-m365-service-check" value="microsoft365" checked> Microsoft 365 Portal
+                </label>
+              </div>
+            </div>
+            <div class="form-row-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 10px;">
+              <label style="display: flex; align-items: center; gap: 6px; font-weight: normal; cursor: pointer; font-size: 0.85rem;">
+                <input type="checkbox" id="widget-m365-show-latency" checked> Display Latency
+              </label>
+              <label style="display: flex; align-items: center; gap: 6px; font-weight: normal; cursor: pointer; font-size: 0.85rem;">
+                <input type="checkbox" id="widget-m365-show-sparkline" checked> Sparkline History
+              </label>
+            </div>
+            <div class="form-group" style="margin-top: 10px;">
+              <label for="widget-m365-interval">Health Check Frequency</label>
+              <select id="widget-m365-interval">
+                <option value="15">Fast (Every 15s)</option>
+                <option value="30" selected>Standard (Every 30s)</option>
+                <option value="60">Eco (Every 60s)</option>
+                <option value="300">Slow (Every 5 mins)</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- M365 Message Center Config -->
+          <div class="widget-type-fields field-m365-message-center" style="display: none;">
+            <div class="form-row-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 10px;">
+              <div class="form-group">
+                <label for="widget-m365-msg-filter">Category Filter</label>
+                <select id="widget-m365-msg-filter">
+                  <option value="all">All Categories</option>
+                  <option value="major">Major Updates</option>
+                  <option value="change">Plan for Change</option>
+                  <option value="incident">Service Issues</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="widget-m365-msg-status-filter">Status Filter</label>
+                <select id="widget-m365-msg-status-filter">
+                  <option value="all">All Statuses</option>
+                  <option value="active">Active / Action Required</option>
+                  <option value="investigating">Investigating</option>
+                  <option value="completed">Completed / Informational</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-row-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 10px;">
+              <div class="form-group">
+                <label for="widget-m365-msg-service-filter">Service Filter</label>
+                <select id="widget-m365-msg-service-filter">
+                  <option value="all">All Services</option>
+                  <option value="teams">Microsoft Teams</option>
+                  <option value="exchange">Exchange Online</option>
+                  <option value="sharepoint">SharePoint Online</option>
+                  <option value="entra">Entra ID / Identity</option>
+                  <option value="azure">Azure Portal / Dev</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="widget-m365-msg-limit">Messages Count</label>
+                <input type="number" id="widget-m365-msg-limit" min="1" max="50" value="10">
+              </div>
+            </div>
+            <div class="form-group">
+              <label style="display: flex; align-items: center; gap: 6px; font-weight: normal; cursor: pointer; margin-top: 5px;">
+                <input type="checkbox" id="widget-m365-msg-live" checked> Live M365 Feed (Fallback to Mock if unavailable)
+              </label>
+            </div>
+          </div>
+
+          <!-- M365 Stats Config -->
+          <div class="widget-type-fields field-m365-stats" style="display: none;">
+            <div class="form-row-grid" style="display: grid; grid-template-columns: 1.2fr 1fr; gap: 12px;">
+              <div class="form-group">
+                <label for="widget-m365-stats-tenant">Tenant Name</label>
+                <input type="text" id="widget-m365-stats-tenant" placeholder="Contoso Corp">
+              </div>
+              <div class="form-group">
+                <label for="widget-m365-stats-style">Display Style</label>
+                <select id="widget-m365-stats-style">
+                  <option value="gauges">Radial Gauges</option>
+                  <option value="bars">Horizontal Bars</option>
+                </select>
+              </div>
+            </div>
+            <div style="font-size: 0.8rem; font-weight: 600; margin-top: 10px; margin-bottom: 6px; color: var(--text-secondary); text-transform: uppercase;">Administrative KPIs</div>
+            <div class="form-row-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+              <div class="form-group">
+                <label for="widget-m365-stats-uptime">SLA Uptime (%)</label>
+                <input type="text" id="widget-m365-stats-uptime" value="99.98">
+              </div>
+              <div class="form-group">
+                <label for="widget-m365-stats-compliance">Device Compliance (%)</label>
+                <input type="text" id="widget-m365-stats-compliance" value="98.5">
+              </div>
+              <div class="form-group">
+                <label for="widget-m365-stats-licenses">Licenses Assigned</label>
+                <input type="text" id="widget-m365-stats-licenses" value="1420/1500">
+              </div>
+              <div class="form-group">
+                <label for="widget-m365-stats-sec-score">Secure Score (%)</label>
+                <input type="text" id="widget-m365-stats-sec-score" value="74.5">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-actions">
+          <button type="button" id="widget-cancel-btn" class="btn-macos btn-macos-secondary">Cancel</button>
+          <button type="submit" id="widget-save-btn" class="btn-macos btn-macos-primary">Save Widget</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Category Group Modal (Hidden by Default) -->
+  <div id="group-modal" class="modal-overlay" style="display: none;">
+    <div class="modal-container">
+      <div class="modal-header">
+        <h3 id="group-modal-title">Add Category</h3>
+        <button type="button" class="modal-close-btn" id="group-modal-close-btn"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <form id="group-form" onsubmit="event.preventDefault();">
+        <div class="form-group">
+          <label for="modal-group-title">Category Name</label>
+          <input type="text" id="modal-group-title" placeholder="e.g. Media Center, Downloads" required>
+        </div>
+        <div class="form-group">
+          <label for="modal-group-icon">Category Icon</label>
+          <select id="modal-group-icon">
+            <option value="fa-folder">Folder (fa-folder)</option>
+            <option value="fa-tv">TV (fa-tv)</option>
+            <option value="fa-download">Downloads (fa-download)</option>
+            <option value="fa-network-wired">Network (fa-network-wired)</option>
+            <option value="fa-cloud">Cloud (fa-cloud)</option>
+            <option value="fa-gears">Settings (fa-gears)</option>
+            <option value="fa-terminal">Terminal (fa-terminal)</option>
+            <option value="fa-circle-nodes">Nodes (fa-circle-nodes)</option>
+            <option value="fa-server">Server (fa-server)</option>
+            <option value="fa-shield-halved">Shield (fa-shield-halved)</option>
+          </select>
+        </div>
+        <div class="modal-actions">
+          <button type="button" id="group-cancel-btn" class="btn-macos btn-macos-secondary">Cancel</button>
+          <button type="submit" id="group-save-btn" class="btn-macos btn-macos-primary">Save Category</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Spotlight Command Palette Modal -->
+  <div id="command-palette-modal" class="modal-overlay spotlight-overlay" style="display: none;">
+    <div class="spotlight-container">
+      <div class="spotlight-search-bar">
+        <i class="fa-solid fa-terminal spotlight-icon"></i>
+        <input type="text" id="spotlight-input" placeholder="Search apps, groups, or type /edit, /settings..." autocomplete="off">
+        <span class="spotlight-shortcut-badge">ESC</span>
+      </div>
+      <div class="spotlight-results" id="spotlight-results"></div>
+    </div>
+  </div>
+
+  <!-- Fullscreen Glassmorphic Details Overlay (Phase 2 Command Center) -->
+  <div id="app-detail-overlay" class="modal-overlay detail-overlay" style="display: none;">
+    <div class="detail-container" id="app-detail-container">
+      <div class="detail-header">
+        <div class="detail-header-left">
+          <div class="detail-app-icon" id="detail-app-icon">
+            <i class="fa-solid fa-server"></i>
+          </div>
+          <h3 id="detail-app-title">Application Control</h3>
+        </div>
+        <button type="button" class="modal-close-btn" id="detail-close-btn"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="detail-body" id="app-detail-body">
+        <!-- Dynamically injected content based on app context -->
+      </div>
+    </div>
+  </div>
+
+  <!-- First-Time Setup Wizard Modal (Overlay) -->
+  <div id="first-time-setup-modal" class="modal-overlay" style="display: none; z-index: 10000; background: rgba(8, 12, 20, 0.75); backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px);">
+    <div class="modal-container" style="max-width: 550px; padding: 40px; border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 28px; box-shadow: 0 24px 80px rgba(0, 0, 0, 0.5); animation: scaleIn 0.5s ease;">
+      <div style="text-align: center; margin-bottom: 30px;">
+        <div style="font-size: 3rem; margin-bottom: 15px; color: #a855f7; display: inline-flex; animation: float-blob 6s infinite alternate ease-in-out;">
+          <i class="fa-solid fa-wand-magic-sparkles"></i>
+        </div>
+        <h2 style="font-family: var(--font-display); font-size: 2rem; font-weight: 700; margin-bottom: 8px; color: var(--text-primary);">Personalize Your Launchpad</h2>
+        <p style="font-size: 0.95rem; color: var(--text-secondary); line-height: 1.4;">Welcome! Let's customize your workspace in a few quick steps. Everything is saved locally in your browser.</p>
+      </div>
+      <form id="first-time-setup-form" onsubmit="event.preventDefault();">
+        <div class="form-group" style="margin-bottom: 20px; display: flex; flex-direction: column; gap: 8px; text-align: left;">
+          <label for="setup-username" style="font-weight: 600; font-size: 0.85rem; color: var(--text-secondary); text-transform: uppercase;">Your Name</label>
+          <input type="text" id="setup-username" placeholder="e.g. Thomas" required style="width: 100%; padding: 14px; border-radius: 12px; background: rgba(0, 0, 0, 0.25); border: 1px solid rgba(255, 255, 255, 0.08); color: white;">
+        </div>
+        <div class="form-group" style="margin-bottom: 20px; display: flex; flex-direction: column; gap: 8px; text-align: left;">
+          <label for="setup-workspacename" style="font-weight: 600; font-size: 0.85rem; color: var(--text-secondary); text-transform: uppercase;">Workspace Title</label>
+          <input type="text" id="setup-workspacename" placeholder="e.g. Thomas's Workspace" required style="width: 100%; padding: 14px; border-radius: 12px; background: rgba(0, 0, 0, 0.25); border: 1px solid rgba(255, 255, 255, 0.08); color: white;">
+        </div>
+        <div class="form-row-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; text-align: left;">
+          <div class="form-group" style="display: flex; flex-direction: column; gap: 8px;">
+            <label for="setup-weather-city" style="font-weight: 600; font-size: 0.85rem; color: var(--text-secondary); text-transform: uppercase;">Weather City</label>
+            <input type="text" id="setup-weather-city" placeholder="e.g. London" required style="width: 100%; padding: 14px; border-radius: 12px; background: rgba(0, 0, 0, 0.25); border: 1px solid rgba(255, 255, 255, 0.08); color: white;">
+          </div>
+          <div class="form-group" style="display: flex; flex-direction: column; gap: 8px;">
+            <label for="setup-theme" style="font-weight: 600; font-size: 0.85rem; color: var(--text-secondary); text-transform: uppercase;">Select Theme</label>
+            <select id="setup-theme" style="width: 100%; padding: 14px; border-radius: 12px; background: rgba(0, 0, 0, 0.25); border: 1px solid rgba(255, 255, 255, 0.08); color: white; cursor: pointer; height: 49px;">
+              <option value="theme-midnight-nebula">Midnight Nebula</option>
+              <option value="theme-aurora-borealis">Aurora Borealis</option>
+              <option value="theme-solar-eclipse">Solar Eclipse</option>
+              <option value="theme-cyberpunk">Cyberpunk Cyber</option>
+              <option value="theme-slate-glass">Slate Glass</option>
+            </select>
+          </div>
+        </div>
+        <button type="submit" class="btn-macos btn-macos-primary" style="width: 100%; padding: 16px; font-size: 1.05rem; font-weight: 600; border-radius: 14px; margin-top: 10px;">
+          Complete Setup & Enter <i class="fa-solid fa-arrow-right" style="margin-left: 6px;"></i>
+        </button>
+      </form>
+    </div>
+  </div>
+  <!-- Custom Confirmation Modal (Hidden by Default) -->
+  <div id="confirm-modal" class="modal-overlay" style="display: none; z-index: 100005;">
+    <div class="modal-container" style="max-width: 420px; padding: 28px; text-align: center; border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 28px; background: rgba(18, 18, 28, 0.75); backdrop-filter: blur(40px); -webkit-backdrop-filter: blur(40px); box-shadow: 0 24px 80px rgba(0, 0, 0, 0.5);">
+      <div style="font-size: 2.75rem; color: #ff453a; margin-bottom: 18px; display: inline-flex;">
+        <i class="fa-solid fa-circle-exclamation"></i>
+      </div>
+      <h3 id="confirm-modal-title" style="font-family: var(--font-display); font-size: 1.3rem; font-weight: 700; margin-bottom: 12px; color: var(--text-primary);">Confirm Action</h3>
+      <p id="confirm-modal-message" style="font-size: 0.95rem; color: var(--text-secondary); line-height: 1.45; margin-bottom: 28px;">Are you sure you want to proceed?</p>
+      <div class="modal-actions" style="justify-content: center; gap: 14px; margin-top: 0;">
+        <button type="button" id="confirm-cancel-btn" class="btn-macos btn-macos-secondary" style="min-width: 100px; margin: 0;">Cancel</button>
+        <button type="button" id="confirm-ok-btn" class="btn-macos btn-macos-primary" style="min-width: 100px; margin: 0; background: #ff3c00; border-color: rgba(255, 60, 0, 0.3); color: white;">Delete</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Interactive Dashboard Functionality Script -->
+  <script src="app.js"></script>
+</body>
+</html>
+
+
