@@ -436,9 +436,6 @@ const DEFAULT_GROUPS = [
 
 const DEFAULT_WIDGETS = [
   { id: 'widget-clock', type: 'clock', title: 'Clock', colSpan: 1, settings: {} },
-  { id: 'widget-notepad', type: 'notepad', title: 'Notepad', colSpan: 1, settings: {} },
-  { id: 'widget-theme', type: 'theme', title: 'Workspace Style', colSpan: 1, settings: {} },
-  { id: 'widget-weather', type: 'weather', title: 'Weather', colSpan: 1, settings: { city: 'London', state: 'sunny' } },
   { id: 'widget-bookmarks', type: 'bookmarks', title: 'Quick Bookmarks', colSpan: 1, settings: {} }
 ];
 
@@ -2879,8 +2876,7 @@ function loadWorkWidgetsFromStorage() {
   const data = localStorage.getItem('launchpad_work_widgets');
   const WORK_WIDGETS_DEFAULT = [
     { id: 'widget-m365-status', type: 'm365-status', title: 'M365 Status (Live)', colSpan: 1 },
-    { id: 'widget-m365-message-center', type: 'm365-message-center', title: 'M365 Message Center', colSpan: 1, settings: { limit: 10, useLiveFeed: true } },
-    { id: 'widget-work-tasks', type: 'work-tasks', title: 'Work Tasks', colSpan: 1 }
+    { id: 'widget-m365-message-center', type: 'm365-message-center', title: 'M365 Message Center', colSpan: 1, settings: { limit: 10, useLiveFeed: true } }
   ];
   if (!data) {
     localStorage.setItem('launchpad_work_widgets', JSON.stringify(WORK_WIDGETS_DEFAULT));
