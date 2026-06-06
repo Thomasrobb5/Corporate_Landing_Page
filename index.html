@@ -643,11 +643,24 @@
                   Restore a previously saved config. <strong>Warning:</strong> This will overwrite all current cards and data.
                 </p>
                 <label for="settings-import-file" class="btn-macos btn-macos-secondary" style="display: inline-flex; align-items: center; gap: 8px; cursor: pointer; margin: 0;">
-                  <i class="fa-solid fa-file-import"></i> Choose Config File
+                  <i class="fa-solid fa-file-import"></i> Select .json File
+                  <input type="file" id="settings-import-file" accept=".json" style="display: none;">
                 </label>
-                <input type="file" id="settings-import-file" accept=".json" style="display: none;">
               </div>
             </div>
+
+            <div class="settings-card-group">
+              <div class="settings-card-group-title" style="color: #ef4444;">Clear Local Data</div>
+              <div style="text-align: center; padding: 10px 0;">
+                <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 12px; line-height: 1.4;">
+                  Erase all local storage data and reset the workspace to default settings. <strong>This cannot be undone.</strong>
+                </p>
+                <button type="button" id="settings-clear-data-btn" class="btn-macos" style="background: rgba(239, 68, 68, 0.2); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.4); display: inline-flex; align-items: center; gap: 8px;">
+                  <i class="fa-solid fa-trash-can"></i> Clear All Data
+                </button>
+              </div>
+            </div>
+
           </div>
 
           <div class="modal-actions" style="margin-top: 24px;">

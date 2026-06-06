@@ -1526,13 +1526,13 @@ function initModalEvents() {
       const sizeOverride = document.getElementById('modal-app-size').value;
       const pingEnabled = document.getElementById('modal-app-ping').checked;
       const favorite = document.getElementById('modal-app-favorite').checked;
-      const integration = document.getElementById('modal-app-integration').value;
+
       const groupSelect = document.getElementById('modal-app-group');
       const targetGroupIndex = parseInt(groupSelect.value, 10);
 
       if (!title || !desc || !url) return;
 
-      const appData = { title, desc, url, color, icon, colspan, rowspan, sizeOverride, pingEnabled, favorite, integration };
+      const appData = { title, desc, url, color, icon, colspan, rowspan, sizeOverride, pingEnabled, favorite };
 
       if (editingAppIndex === null) {
         // Create new card
@@ -1574,7 +1574,7 @@ function openModalForCreate(groupIndex = 0) {
   document.getElementById('modal-app-size').value = 'default';
   document.getElementById('modal-app-ping').checked = true;
   document.getElementById('modal-app-favorite').checked = false;
-  document.getElementById('modal-app-integration').value = 'none';
+
 
   document.getElementById('editor-modal').style.display = 'flex';
 }
@@ -1598,7 +1598,7 @@ function openModalForEdit(groupIndex, appIndex) {
     document.getElementById('modal-app-size').value = app.sizeOverride || 'default';
     document.getElementById('modal-app-ping').checked = app.pingEnabled !== false;
     document.getElementById('modal-app-favorite').checked = app.favorite === true;
-    document.getElementById('modal-app-integration').value = app.integration || 'none';
+
   }
 
   document.getElementById('editor-modal').style.display = 'flex';
@@ -1955,6 +1955,16 @@ function initSettingsModal() {
   const importFile = document.getElementById('settings-import-file');
   if (importFile) {
     importFile.addEventListener('change', (e) => importWorkspaceConfig(e));
+  }
+
+  const clearDataBtn = document.getElementById('settings-clear-data-btn');
+  if (clearDataBtn) {
+    clearDataBtn.addEventListener('click', () => {
+      if (confirm('Are you sure you want to clear all data and reset the workspace? This cannot be undone.')) {
+        localStorage.clear();
+        location.reload();
+      }
+    });
   }
 
   // Hook Test Connection buttons
