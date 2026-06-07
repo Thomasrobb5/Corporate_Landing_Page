@@ -520,8 +520,8 @@ a {
   opacity: 1;
 }
 
-.mac-menu-item.apple-logo {
-  font-size: 0.95rem;
+.mac-menu-item.launchpad-logo {
+  font-size: 1.15rem;
 }
 
 .mac-menu-item.active-app {
@@ -1985,7 +1985,7 @@ a {
   .mac-menu-bar {
     padding: 0 12px;
   }
-  .mac-menu-left .mac-menu-item:not(.apple-logo):not(.active-app) {
+  .mac-menu-left .mac-menu-item:not(.launchpad-logo):not(.active-app) {
     display: none; /* Hide less important menu items on small screens */
   }
 
@@ -4769,4 +4769,125 @@ body.work-mode-active {
   height: 1.45rem !important;
 }
 
+/* ==========================================================================
+   Reference & Tools Page Styles
+   ========================================================================== */
+.kb-link {
+  color: var(--text-primary);
+  text-decoration: none;
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  transition: all 0.2s ease;
+}
 
+.kb-link i {
+  font-size: 0.75rem;
+  color: var(--accent-color, #0078d4);
+  opacity: 0.8;
+  transition: transform 0.2s ease;
+}
+
+.kb-link:hover {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.1);
+  transform: translateX(4px);
+}
+
+.kb-link:hover i {
+  transform: translate(2px, -2px);
+}
+
+.cmd-tab-btn {
+  background: none;
+  border: 1px solid transparent;
+  color: var(--text-secondary);
+  font-family: var(--font-body);
+  font-weight: 500;
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.cmd-tab-btn:hover {
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text-primary);
+}
+
+.cmd-tab-btn.active {
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--text-primary);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.command-block {
+  margin-bottom: 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.command-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.command-title {
+  font-weight: 600;
+  font-size: 1.05rem;
+  color: var(--text-primary);
+}
+
+.command-desc {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  opacity: 0.9;
+}
+
+.command-code-wrapper {
+  display: flex;
+  align-items: stretch;
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  overflow: hidden;
+  position: relative;
+  box-shadow: inset 0 2px 4px rgba(0,0,0,0.2);
+}
+
+.command-code {
+  flex: 1;
+  padding: 16px 18px;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 0.9rem;
+  color: #34d399; /* Green syntax color */
+  overflow-x: auto;
+  white-space: pre;
+  line-height: 1.4;
+}
+
+.copy-cmd-btn {
+  background: rgba(255, 255, 255, 0.05);
+  border: none;
+  border-left: 1px solid rgba(255, 255, 255, 0.1);
+  color: var(--text-secondary);
+  padding: 0 20px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+}
+
+.copy-cmd-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--text-primary);
+}

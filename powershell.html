@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>PowerShell Basics | Corporate Launchpad</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    html { scroll-behavior: smooth; }
+    .ps-nav-link {
+      display: block;
+      padding: 10px 16px;
+      color: var(--text-secondary);
+      text-decoration: none;
+      border-radius: 8px;
+      transition: all 0.2s ease;
+      font-weight: 500;
+    }
+    .ps-nav-link:hover, .ps-nav-link.active {
+      background: rgba(255, 255, 255, 0.05);
+      color: var(--text-primary);
+    }
+    .ps-nav-link i {
+      margin-right: 8px;
+      color: var(--accent-color);
+      width: 16px;
+      text-align: center;
+    }
+    .ps-content-section { margin-bottom: 80px; }
+    .ps-content-section h2 {
+      font-size: 1.7rem;
+      margin-bottom: 24px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--card-border);
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .ps-content-section h3 {
+      font-size: 1.25rem;
+      margin-top: 40px;
+      margin-bottom: 16px;
+      color: var(--text-primary);
+    }
+    .ps-content-section p {
+      color: var(--text-secondary);
+      line-height: 1.7;
+      margin-bottom: 16px;
+      font-size: 1.05rem;
+    }
+    .ps-content-section ul {
+      color: var(--text-secondary);
+      line-height: 1.7;
+      margin-bottom: 24px;
+      padding-left: 24px;
+      font-size: 1.05rem;
+    }
+    .ps-content-section li { margin-bottom: 8px; }
+    .ps-alert {
+      background: rgba(16, 185, 129, 0.1);
+      border-left: 4px solid #10b981;
+      padding: 20px;
+      border-radius: 4px;
+      margin-bottom: 24px;
+    }
+    .ps-alert-info {
+      background: rgba(59, 130, 246, 0.1);
+      border-left: 4px solid #3b82f6;
+    }
+    .ps-alert-warning {
+      background: rgba(245, 158, 11, 0.1);
+      border-left: 4px solid #f59e0b;
+    }
+    .ps-alert h4 {
+      color: var(--text-primary);
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 1.1rem;
+    }
+    .ps-alert p { margin-bottom: 0; font-size: 1rem; }
+    code.inline-code {
+      background: rgba(255, 255, 255, 0.1);
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-family: monospace;
+      color: var(--accent-color);
+    }
+  </style>
+</head>
+<body class="theme-corporate-azure">
+
+  <div class="mac-menu-bar">
+    <div class="mac-menu-left">
+      <i class="fa-solid fa-rocket mac-menu-item launchpad-logo"></i>
+      <span class="workspace-label mac-menu-item active-app">PowerShell Basics</span>
+      <a href="index.html" class="mac-menu-item" style="background: none; border: none; color: inherit; font: inherit; padding: 0; cursor: pointer; display: flex; align-items: center; gap: 6px; text-decoration: none;">
+        <i class="fa-solid fa-arrow-left"></i> Back to Launchpad
+      </a>
+      <a href="reference.html" class="mac-menu-item" style="background: none; border: none; color: inherit; font: inherit; padding: 0; cursor: pointer; display: flex; align-items: center; gap: 6px; text-decoration: none;">
+        <i class="fa-solid fa-book-journal-whills"></i> IT Reference
+      </a>
+    </div>
+    <div class="mac-menu-right">
+      <span id="menu-time" class="mac-menu-item"></span>
+      <span id="menu-date" class="mac-menu-item"></span>
+    </div>
+  </div>
+
+  <div class="bg-blobs" id="bg-blobs">
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+    <div class="blob blob-3"></div>
+  </div>
+
+  <div id="bg-pattern-overlay" class="bg-pattern-overlay"></div>
+
+  <div class="dashboard-container">
+    <div class="reference-content-wrapper" style="max-width: 1400px; width: 100%; margin: 0 auto;">
+      <header class="dashboard-header" style="margin-bottom: 40px;">
+        <div class="greeting-container">
+          <h1>The PowerShell Guide</h1>
+          <p class="subtitle">An instructional deep-dive into PowerShell fundamentals for IT Administration.</p>
+        </div>
+      </header>
+
+      <main class="reference-layout" style="display: grid; grid-template-columns: 280px minmax(0, 1fr); gap: 40px; padding-bottom: 60px;">
+        
+        <aside style="position: sticky; top: 100px; height: fit-content;">
+          <section class="reference-section" style="background: var(--card-bg); border: 1px solid var(--card-border); border-radius: var(--card-radius, 24px); padding: 24px; backdrop-filter: blur(var(--glass-blur, 20px)); -webkit-backdrop-filter: blur(var(--glass-blur, 20px)); box-shadow: var(--shadow-md);">
+            <h3 style="font-size: 1rem; color: var(--text-secondary); margin-bottom: 16px; text-transform: uppercase; letter-spacing: 1px;">Table of Contents</h3>
+            <nav style="display: flex; flex-direction: column; gap: 4px;">
+              <a href="#intro" class="ps-nav-link"><i class="fa-solid fa-book-open"></i> 1. Introduction & Discovery</a>
+              <a href="#variables" class="ps-nav-link"><i class="fa-solid fa-box-open"></i> 2. Variables & Data Types</a>
+              <a href="#pipeline" class="ps-nav-link"><i class="fa-solid fa-arrow-right-arrow-left"></i> 3. The Pipeline</a>
+              <a href="#logic" class="ps-nav-link"><i class="fa-solid fa-code-branch"></i> 4. Logic & Loops</a>
+              <a href="#modules" class="ps-nav-link"><i class="fa-solid fa-cubes"></i> 5. Modules & Policies</a>
+              <a href="#graph" class="ps-nav-link"><i class="fa-solid fa-network-wired"></i> 6. Microsoft Graph API</a>
+              <a href="#intune" class="ps-nav-link"><i class="fa-solid fa-laptop-medical"></i> 7. Intune Remediations</a>
+            </nav>
+          </section>
+        </aside>
+
+        <section class="reference-section" style="background: var(--card-bg); border: 1px solid var(--card-border); border-radius: var(--card-radius, 24px); padding: 40px; backdrop-filter: blur(var(--glass-blur, 20px)); -webkit-backdrop-filter: blur(var(--glass-blur, 20px)); box-shadow: var(--shadow-md); min-width: 0;">
+          
+          <!-- SECTION 1 -->
+          <div id="intro" class="ps-content-section">
+            <h2><i class="fa-solid fa-book-open" style="color: var(--accent-color);"></i> 1. Introduction & Discovery</h2>
+            <p>Welcome to PowerShell. If you are coming from Command Prompt (CMD) or Linux Bash, the most important thing to learn is this: <strong>PowerShell does not output text, it outputs Objects.</strong></p>
+            <p>An object is a data structure that contains properties (information) and methods (actions). When you run a command to get a user, you aren't getting a string of text that says "John Doe". You are getting a User Object that contains a <code>FirstName</code> property, a <code>LastName</code> property, an <code>IsActive</code> property, etc.</p>
+
+            <div class="ps-alert ps-alert-info">
+              <h4><i class="fa-solid fa-magnifying-glass"></i> Self-Discovery: The Core Three Commands</h4>
+              <p>You don't need to memorize PowerShell commands. You just need to know how to ask PowerShell for help. The three most important commands in PowerShell are <code>Get-Command</code>, <code>Get-Help</code>, and <code>Get-Member</code>.</p>
+            </div>
+
+            <h3>Finding Commands</h3>
+            <p>Use <code class="inline-code">Get-Command</code> to find commands based on verbs (like Get, Set, New, Remove) or nouns (like User, Mailbox, Device).</p>
+            <div class="command-block">
+              <div class="command-code-wrapper">
+                <code class="command-code"># Find all commands related to a Mailbox
+Get-Command -Noun Mailbox
+
+# Find all commands that "Set" something regarding a User
+Get-Command -Verb Set -Noun *User*</code>
+                <button class="copy-cmd-btn" title="Copy to clipboard"><i class="fa-regular fa-copy"></i></button>
+              </div>
+            </div>
+
+            <h3>Learning How to Use a Command</h3>
+            <p>Once you find a command, use <code class="inline-code">Get-Help</code> to understand its syntax. Adding <code class="inline-code">-Examples</code> shows you exactly how to type it.</p>
+            <div class="command-block">
+              <div class="command-code-wrapper">
+                <code class="command-code"># Read the instruction manual for New-Mailbox
+Get-Help New-Mailbox
+
+# See real-world examples of how to use it
+Get-Help New-Mailbox -Examples</code>
+                <button class="copy-cmd-btn" title="Copy to clipboard"><i class="fa-regular fa-copy"></i></button>
+              </div>
+            </div>
+
+            <h3>Exploring Objects</h3>
+            <p>Use <code class="inline-code">Get-Member</code> to see what properties and methods are hidden inside an object.</p>
+            <div class="command-block">
+              <div class="command-code-wrapper">
+                <code class="command-code"># See all the properties attached to a process
+Get-Process | Get-Member</code>
+                <button class="copy-cmd-btn" title="Copy to clipboard"><i class="fa-regular fa-copy"></i></button>
+              </div>
+            </div>
+          </div>
+
+          <!-- SECTION 2 -->
+          <div id="variables" class="ps-content-section">
+            <h2><i class="fa-solid fa-box-open" style="color: var(--accent-color);"></i> 2. Variables & Data Types</h2>
+            <p>Variables act as containers to store information so you can use it later. In PowerShell, variables always start with a dollar sign (<code class="inline-code">$</code>).</p>
+
+            <h3>Basic Variables</h3>
+            <p>PowerShell automatically guesses the data type, but you can force it if necessary.</p>
+            <div class="command-block">
+              <div class="command-code-wrapper">
+                <code class="command-code"># A String (Text)
+$userName = "Admin User"
+
+# An Integer (Whole Number)
+$retryCount = 5
+
+# A Boolean (True/False)
+$isActive = $true</code>
+                <button class="copy-cmd-btn" title="Copy to clipboard"><i class="fa-regular fa-copy"></i></button>
+              </div>
+            </div>
+
+            <h3>Arrays (Lists)</h3>
+            <p>An array is a list of items stored in a single variable. Arrays are created using the <code class="inline-code">@()</code> syntax.</p>
+            <div class="command-block">
+              <div class="command-code-wrapper">
+                <code class="command-code"># Create a list of email addresses
+$emailList = @("user1@domain.com", "user2@domain.com", "user3@domain.com")
+
+# Access the first item in the array (Computers start counting at 0)
+Write-Output $emailList[0]  # Outputs: user1@domain.com</code>
+                <button class="copy-cmd-btn" title="Copy to clipboard"><i class="fa-regular fa-copy"></i></button>
+              </div>
+            </div>
+
+            <h3>Hash Tables (Dictionaries)</h3>
+            <p>Hash tables store "Key-Value" pairs. They are incredibly useful for pairing data together, like a username and their department. They use the <code class="inline-code">@{}</code> syntax.</p>
+            <div class="command-block">
+              <div class="command-code-wrapper">
+                <code class="command-code"># Create a Hash Table
+$userDepartments = @{
+    "user1@domain.com" = "Sales"
+    "user2@domain.com" = "Marketing"
+}
+
+# Lookup a specific value
+Write-Output $userDepartments["user1@domain.com"]  # Outputs: Sales</code>
+                <button class="copy-cmd-btn" title="Copy to clipboard"><i class="fa-regular fa-copy"></i></button>
+              </div>
+            </div>
+          </div>
+
+          <!-- SECTION 3 -->
+          <div id="pipeline" class="ps-content-section">
+            <h2><i class="fa-solid fa-arrow-right-arrow-left" style="color: var(--accent-color);"></i> 3. The Pipeline</h2>
+            <p>The Pipeline (<code class="inline-code">|</code>) is the heart of PowerShell. It takes the output of the command on the left, and passes it directly as the input to the command on the right.</p>
+            <p>Because PowerShell passes objects, the receiving command understands all the properties of the data being passed to it.</p>
+
+            <h3>Filtering with Where-Object</h3>
+            <p>You can use the pipeline to pass a massive list of data into <code class="inline-code">Where-Object</code>, which acts like a filter. It only lets objects through if they match your criteria. Inside the filter, <code class="inline-code">$_</code> represents the current object being looked at.</p>
+            <div class="command-block">
+              <div class="command-code-wrapper">
+                <code class="command-code"># Get all processes, but ONLY keep the ones using more than 100MB of RAM
+Get-Process | Where-Object { $_.WorkingSet -gt 100MB }
+
+# Get all mailboxes, filter for only the Shared ones
+Get-Mailbox | Where-Object { $_.RecipientTypeDetails -eq "SharedMailbox" }</code>
+                <button class="copy-cmd-btn" title="Copy to clipboard"><i class="fa-regular fa-copy"></i></button>
+              </div>
+            </div>
+
+            <h3>Formatting with Select-Object</h3>
+            <p><code class="inline-code">Select-Object</code> is used to grab only the specific properties you care about, creating a clean table of output.</p>
+            <div class="command-block">
+              <div class="command-code-wrapper">
+                <code class="command-code"># Get all mailboxes, but only show their Display Name and Primary Email
+Get-Mailbox | Select-Object DisplayName, PrimarySmtpAddress</code>
+                <button class="copy-cmd-btn" title="Copy to clipboard"><i class="fa-regular fa-copy"></i></button>
+              </div>
+            </div>
+          </div>
+
+          <!-- SECTION 4 -->
+          <div id="logic" class="ps-content-section">
+            <h2><i class="fa-solid fa-code-branch" style="color: var(--accent-color);"></i> 4. Logic & Loops</h2>
+            <p>Scripts become powerful when they can make decisions and perform repetitive tasks automatically.</p>
+
+            <h3>If / ElseIf / Else</h3>
+            <p>Use If statements to run code only when certain conditions are met. Note that PowerShell uses operators like <code class="inline-code">-eq</code> (equal), <code class="inline-code">-ne</code> (not equal), <code class="inline-code">-gt</code> (greater than), and <code class="inline-code">-lt</code> (less than) instead of standard math symbols.</p>
+            <div class="command-block">
+              <div class="command-code-wrapper">
+                <code class="command-code">$userStatus = "Active"
+
+if ($userStatus -eq "Active") {
+    Write-Output "The user can log in."
+} elseif ($userStatus -eq "Suspended") {
+    Write-Output "The user is suspended."
+} else {
+    Write-Output "Status unknown."
+}</code>
+                <button class="copy-cmd-btn" title="Copy to clipboard"><i class="fa-regular fa-copy"></i></button>
+              </div>
+            </div>
+
+            <h3>The ForEach Loop</h3>
+            <p>The <code class="inline-code">foreach</code> loop is used to iterate through an array of items one by one. This is essential for bulk processing, such as reading a CSV file and creating 100 users at once.</p>
+            <div class="command-block">
+              <div class="command-code-wrapper">
+                <code class="command-code">$servers = @("Server01", "Server02", "Server03")
+
+foreach ($server in $servers) {
+    Write-Output "Checking connection to $server..."
+    Test-NetConnection -ComputerName $server -Port 443
+}</code>
+                <button class="copy-cmd-btn" title="Copy to clipboard"><i class="fa-regular fa-copy"></i></button>
+              </div>
+            </div>
+          </div>
+
+          <!-- SECTION 5 -->
+          <div id="modules" class="ps-content-section">
+            <h2><i class="fa-solid fa-cubes" style="color: var(--accent-color);"></i> 5. Modules & Policies</h2>
+            <p>PowerShell out-of-the-box only knows how to manage Windows. To manage Exchange, Intune, or VMware, you must install additional "instruction manuals" called Modules.</p>
+
+            <h3>Execution Policies</h3>
+            <p>Before you can run custom scripts, you must configure the Windows Execution Policy. By default, it is set to "Restricted" to prevent malicious scripts from executing.</p>
+            <p>The standard best practice for IT admins is <code class="inline-code">RemoteSigned</code>. This means local scripts you write yourself will run without issue, but scripts downloaded from the internet must be signed by a trusted publisher.</p>
+            <div class="command-block">
+              <div class="command-code-wrapper">
+                <code class="command-code"># Must be run in an Administrator PowerShell window
+Set-ExecutionPolicy RemoteSigned -Scope CurrentUser</code>
+                <button class="copy-cmd-btn" title="Copy to clipboard"><i class="fa-regular fa-copy"></i></button>
+              </div>
+            </div>
+
+            <h3>Installing from the PowerShell Gallery</h3>
+            <p>The PSGallery is Microsoft's official repository for modules. You can find, install, and update modules directly from the command line.</p>
+            <div class="command-block">
+              <div class="command-code-wrapper">
+                <code class="command-code"># Install the Exchange Online management module
+Install-Module -Name ExchangeOnlineManagement -Force -AllowClobber
+
+# Import the module into your current session so you can use its commands
+Import-Module ExchangeOnlineManagement</code>
+                <button class="copy-cmd-btn" title="Copy to clipboard"><i class="fa-regular fa-copy"></i></button>
+              </div>
+            </div>
+          </div>
+
+          <!-- SECTION 6 -->
+          <div id="graph" class="ps-content-section">
+            <h2><i class="fa-solid fa-network-wired" style="color: var(--accent-color);"></i> 6. Microsoft Graph API</h2>
+            <p>Historically, admins used the <code>AzureAD</code> or <code>MSOnline</code> modules to manage Office 365. These are now deprecated. The modern standard is the <strong>Microsoft Graph PowerShell SDK</strong>.</p>
+
+            <div class="ps-alert ps-alert-warning">
+              <h4><i class="fa-solid fa-triangle-exclamation"></i> Mind the Scopes</h4>
+              <p>When you ran <code>Connect-AzureAD</code>, you logged in with your Global Admin account and could do anything. Graph doesn't work like that. Graph requires you to request specific <strong>Scopes</strong> (Permissions) when connecting, ensuring your script only has the minimum access required to do its job.</p>
+            </div>
+
+            <h3>Connecting with Scopes</h3>
+            <p>If you want to read user data, you must request <code>User.Read.All</code>. If you want to modify users, you must request <code>User.ReadWrite.All</code>.</p>
+            <div class="command-block">
+              <div class="command-code-wrapper">
+                <code class="command-code"># Connect to Graph requesting permission to read/write users and read groups
+Connect-MgGraph -Scopes "User.ReadWrite.All", "Group.Read.All"</code>
+                <button class="copy-cmd-btn" title="Copy to clipboard"><i class="fa-regular fa-copy"></i></button>
+              </div>
+            </div>
+
+            <h3>Finding the Right Scope</h3>
+            <p>Because there are hundreds of scopes, it can be hard to know which one you need. Microsoft provides a tool called <code class="inline-code">Find-MgGraphCommand</code> to help.</p>
+            <div class="command-block">
+              <div class="command-code-wrapper">
+                <code class="command-code"># Ask Graph what permissions you need to run the "Update-MgUser" command
+Find-MgGraphCommand -Command Update-MgUser | Select-Object -ExpandProperty Permissions</code>
+                <button class="copy-cmd-btn" title="Copy to clipboard"><i class="fa-regular fa-copy"></i></button>
+              </div>
+            </div>
+          </div>
+
+          <!-- SECTION 7 -->
+          <div id="intune" class="ps-content-section" style="margin-bottom: 0;">
+            <h2><i class="fa-solid fa-laptop-medical" style="color: var(--accent-color);"></i> 7. Intune Proactive Remediations</h2>
+            <p>Proactive Remediations are a powerful feature of Microsoft Intune that allows you to deploy scripts to endpoints to automatically detect and resolve common issues before users submit a helpdesk ticket.</p>
+
+            <h3>The Two-Script System</h3>
+            <p>A remediation package requires two scripts:</p>
+            <ul>
+              <li><strong>Detection Script:</strong> Runs on a schedule. It checks the computer for a specific problem (e.g., Is a required registry key missing?).</li>
+              <li><strong>Remediation Script:</strong> Only runs if the Detection Script reports a problem. Its job is to fix the issue.</li>
+            </ul>
+
+            <div class="ps-alert">
+              <h4><i class="fa-solid fa-circle-info"></i> The Importance of Exit Codes</h4>
+              <p>Intune does not read your screen. It communicates with your script exclusively through Exit Codes. If you do not explicitly state an exit code, Intune may misinterpret the result.</p>
+              <ul style="margin-bottom: 0; padding-left: 16px; margin-top: 8px;">
+                <li><code>Exit 0</code>: Success / Compliant (No action needed, or fix succeeded).</li>
+                <li><code>Exit 1</code>: Failure / Non-Compliant (Problem detected, or fix failed).</li>
+              </ul>
+            </div>
+
+            <h3>Writing a Detection Script</h3>
+            <p>In this example, we check if the Windows Print Spooler service is running. We use <code class="inline-code">Write-Output</code> so the text shows up in the Intune console logs.</p>
+            <div class="command-block">
+              <div class="command-code-wrapper">
+                <code class="command-code">try {
+    $service = Get-Service -Name Spooler
+    if ($service.Status -eq 'Running') {
+        Write-Output "Spooler service is running properly."
+        Exit 0  # Tell Intune the device is Compliant
+    } else {
+        Write-Output "Spooler service is stopped."
+        Exit 1  # Tell Intune it is Non-Compliant. This triggers the Remediation script.
+    }
+} catch {
+    Write-Output "Error querying service."
+    Exit 1
+}</code>
+                <button class="copy-cmd-btn" title="Copy to clipboard"><i class="fa-regular fa-copy"></i></button>
+              </div>
+            </div>
+
+            <h3>Writing a Remediation Script</h3>
+            <p>The remediation script only fires if the detection script exited with <code class="inline-code">1</code>. Its goal is to resolve the problem and exit with <code class="inline-code">0</code> if successful.</p>
+            <div class="command-block">
+              <div class="command-code-wrapper">
+                <code class="command-code">try {
+    Start-Service -Name Spooler -ErrorAction Stop
+    Write-Output "Successfully started the Print Spooler service."
+    Exit 0  # Tell Intune the fix was successful
+} catch {
+    Write-Output "Failed to start the Print Spooler service. Manual intervention required."
+    Exit 1  # Tell Intune the fix failed
+}</code>
+                <button class="copy-cmd-btn" title="Copy to clipboard"><i class="fa-regular fa-copy"></i></button>
+              </div>
+            </div>
+
+          </div>
+
+        </section>
+
+      </main>
+    </div>
+  </div>
+
+  <script src="reference.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const navLinks = document.querySelectorAll('.ps-nav-link');
+      
+      navLinks.forEach(link => {
+        link.addEventListener('click', function(e) {
+          navLinks.forEach(l => l.classList.remove('active'));
+          this.classList.add('active');
+        });
+      });
+    });
+  </script>
+</body>
+</html>

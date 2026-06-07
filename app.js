@@ -2486,16 +2486,51 @@ function initSearchFilter() {
   if (!searchInput) return;
 
   searchInput.addEventListener('input', applySearchFilter);
+
+  const copyBtn = document.getElementById('command-results-copy');
+  if (copyBtn) {
+    copyBtn.addEventListener('click', () => {
+      const codeEl = document.getElementById('command-results-code');
+      const codeText = codeEl.textContent.trim();
+      navigator.clipboard.writeText(codeText).then(() => {
+        const originalIcon = copyBtn.innerHTML;
+        copyBtn.innerHTML = '<i class="fa-solid fa-check" style="color: #10b981;"></i>';
+        setTimeout(() => {
+          copyBtn.innerHTML = originalIcon;
+        }, 2000);
+      });
+    });
+  }
 }
 
 function applySearchFilter() {
   const searchInput = document.getElementById('search-input');
   const noResults = document.getElementById('no-results');
+  const commandResults = document.getElementById('command-results');
+  const referenceResults = document.getElementById('reference-results');
+  const referenceList = document.getElementById('reference-results-list');
   if (!searchInput) return;
 
   const query = searchInput.value.toLowerCase().trim();
   const groups = document.querySelectorAll('.dashboard-category-group');
   let totalVisibleApps = 0;
+
+  // Handle Command Mode
+  if (query.startsWith('/')) {
+    groups.forEach(g => g.style.display = 'none');
+    if (noResults) noResults.style.display = 'none';
+    if (referenceResults) referenceResults.style.display = 'none';
+    
+    if (commandResults) {
+      commandResults.style.display = 'flex';
+      processCommandMode(query.substring(1).trim());
+    }
+    return;
+  }
+
+  // Normal Search Mode
+  if (commandResults) commandResults.style.display = 'none';
+  if (referenceResults) referenceResults.style.display = 'none';
 
   groups.forEach(groupBlock => {
     const cards = groupBlock.querySelectorAll('.app-card:not(.add-card)');
@@ -2518,7 +2553,6 @@ function applySearchFilter() {
       }
     });
 
-    // Hide entire category if search yields no matches, otherwise show
     if (visibleInGroup === 0 && query !== '') {
       groupBlock.style.display = 'none';
     } else {
@@ -2526,13 +2560,253 @@ function applySearchFilter() {
     }
   });
 
+  // Check Reference Data for natural language queries
+  let foundRefMatches = false;
+  if (query.length >= 3 && referenceResults && referenceList) {
+    const matches = referenceData.filter(ref => 
+      ref.keywords.some(kw => query.includes(kw) || kw.includes(query)) ||
+      ref.title.toLowerCase().includes(query)
+    );
+
+    if (matches.length > 0) {
+      referenceList.innerHTML = '';
+      matches.forEach((match, index) => {
+        const el = document.createElement('div');
+        el.className = 'command-block';
+        el.style.width = '100%';
+        el.style.margin = '0';
+        
+        if (match.type === 'kb') {
+          el.innerHTML = `
+            <div class="command-info" style="margin-bottom: 8px;">
+              <span class="command-title"><i class="fa-solid fa-book" style="margin-right: 6px; color: var(--accent-color);"></i>${match.title}</span>
+              <span class="command-desc">Knowledge Base Article</span>
+            </div>
+            <a href="${match.url}" target="_blank" class="btn-macos btn-macos-secondary" style="text-decoration: none; display: inline-flex; width: fit-content;"><i class="fa-solid fa-arrow-up-right-from-square"></i> Read Article</a>
+          `;
+        } else {
+          el.innerHTML = `
+            <div class="command-info" style="margin-bottom: 8px;">
+              <span class="command-title"><i class="fa-solid fa-terminal" style="margin-right: 6px; color: var(--accent-color);"></i>${match.title}</span>
+              <span class="command-desc">${match.desc}</span>
+            </div>
+            <div class="command-code-wrapper" style="box-shadow: none;">
+              <code class="command-code" id="ref-code-${index}">${match.code}</code>
+              <button class="copy-cmd-btn" onclick="copyRefCode('ref-code-${index}', this)" title="Copy to clipboard"><i class="fa-regular fa-copy"></i></button>
+            </div>
+          `;
+        }
+        referenceList.appendChild(el);
+      });
+      referenceResults.style.display = 'flex';
+      foundRefMatches = true;
+    }
+  }
+
   if (noResults) {
-    if (totalVisibleApps === 0 && query !== '') {
+    if (totalVisibleApps === 0 && query !== '' && !foundRefMatches) {
       noResults.style.display = 'flex';
     } else {
       noResults.style.display = 'none';
     }
   }
+}
+
+// Global function to copy reference code
+window.copyRefCode = function(id, btn) {
+  const codeEl = document.getElementById(id);
+  if (!codeEl) return;
+  navigator.clipboard.writeText(codeEl.textContent.trim()).then(() => {
+    const original = btn.innerHTML;
+    btn.innerHTML = '<i class="fa-solid fa-check" style="color: #10b981;"></i>';
+    setTimeout(() => btn.innerHTML = original, 2000);
+  });
+};
+
+const referenceData = [
+  // ================= EXCHANGE ONLINE =================
+  {
+    type: 'command',
+    title: 'Connect to Exchange Online',
+    keywords: ['exchange', 'exo', 'connect', 'powershell exchange'],
+    code: 'Connect-ExchangeOnline -UserPrincipalName admin@domain.com',
+    desc: 'Establishes a PowerShell session to Exchange Online.'
+  },
+  {
+    type: 'command',
+    title: 'Create a Shared Mailbox',
+    keywords: ['shared mailbox', 'create mailbox', 'new shared'],
+    code: 'New-Mailbox -Shared -Name "Sales" -DisplayName "Sales Dept" -Alias sales',
+    desc: 'Creates a new shared mailbox using Exchange PowerShell.'
+  },
+  {
+    type: 'command',
+    title: 'Convert User Mailbox to Shared',
+    keywords: ['convert mailbox', 'user to shared', 'change to shared'],
+    code: 'Set-Mailbox -Identity user@domain.com -Type Shared',
+    desc: 'Converts a regular user mailbox into a shared mailbox (removes license requirement).'
+  },
+  {
+    type: 'command',
+    title: 'Grant Full Access Permission',
+    keywords: ['full access', 'permission', 'delegate', 'shared mailbox access'],
+    code: 'Add-MailboxPermission -Identity target@domain.com -User admin@domain.com -AccessRights FullAccess -InheritanceType All',
+    desc: 'Give an admin or manager full access to another mailbox.'
+  },
+  {
+    type: 'command',
+    title: 'Grant Send As Permission',
+    keywords: ['send as', 'permission', 'delegate', 'shared mailbox access'],
+    code: 'Add-RecipientPermission -Identity shared@domain.com -Trustee user@domain.com -AccessRights SendAs',
+    desc: 'Allow a user to send emails from a shared mailbox.'
+  },
+  {
+    type: 'command',
+    title: 'Set Out of Office (Auto Reply)',
+    keywords: ['out of office', 'ooo', 'auto reply', 'vacation'],
+    code: 'Set-MailboxAutoReplyConfiguration -Identity user@domain.com -AutoReplyState Enabled -InternalMessage "I am out of the office." -ExternalMessage "I am out of the office."',
+    desc: 'Configure an auto-reply for a specific user.'
+  },
+  {
+    type: 'command',
+    title: 'Check Mailbox Statistics & Size',
+    keywords: ['mailbox size', 'quota', 'how big is', 'storage'],
+    code: 'Get-MailboxStatistics -Identity user@domain.com | Format-List DisplayName, ItemCount, TotalItemSize',
+    desc: 'View mailbox size, item count, and last logon time.'
+  },
+  {
+    type: 'command',
+    title: 'Message Trace (Last 48 Hours)',
+    keywords: ['message trace', 'track email', 'find email', 'where is email'],
+    code: 'Get-MessageTrace -RecipientAddress user@domain.com -StartDate (Get-Date).AddDays(-2) -EndDate (Get-Date)',
+    desc: 'Find emails sent to a specific user recently to troubleshoot mail flow.'
+  },
+
+  // ================= ENTRA ID (AZURE AD) =================
+  {
+    type: 'command',
+    title: 'Connect to Microsoft Graph (Entra ID)',
+    keywords: ['connect graph', 'azure ad connect', 'entra connect', 'mggraph'],
+    code: 'Connect-MgGraph -Scopes "User.ReadWrite.All", "Group.ReadWrite.All", "Directory.ReadWrite.All"',
+    desc: 'Establishes a session for modern Entra ID and M365 management.'
+  },
+  {
+    type: 'command',
+    title: 'Force Azure AD Sync (AD Connect)',
+    keywords: ['force sync', 'ad connect', 'delta sync', 'sync to cloud'],
+    code: 'Start-ADSyncSyncCycle -PolicyType Delta',
+    desc: 'Run this on your on-premise AD Connect server to force an immediate delta sync.'
+  },
+  {
+    type: 'command',
+    title: 'Reset User Password',
+    keywords: ['reset password', 'change password', 'force reset', 'entra password'],
+    code: 'Update-MgUser -UserId user@domain.com -PasswordProfile @{ForceChangePasswordNextSignIn=$true; Password="NewTempPassword123!"}',
+    desc: 'Resets a user password and forces them to change it at next login.'
+  },
+  {
+    type: 'command',
+    title: 'Block User Sign-in',
+    keywords: ['block sign in', 'disable account', 'lock account', 'compromised'],
+    code: 'Update-MgUser -UserId user@domain.com -AccountEnabled $false',
+    desc: 'Immediately blocks a user from signing in (useful during security incidents).'
+  },
+  {
+    type: 'command',
+    title: 'Add User to Entra Group',
+    keywords: ['add to group', 'group member', 'entra group'],
+    code: 'New-MgGroupMember -GroupId "<Group-Object-ID>" -DirectoryObjectId "<User-Object-ID>"',
+    desc: 'Adds a user to a Microsoft Entra ID group using Object IDs.'
+  },
+
+  // ================= INTUNE & ENDPOINTS =================
+  {
+    type: 'command',
+    title: 'Force Intune Device Sync',
+    keywords: ['sync intune', 'force sync', 'device sync', 'update policies'],
+    code: 'Invoke-MgDeviceManagementManagedDeviceSyncDevice -ManagedDeviceId "<Device-ID>"',
+    desc: 'Forces a remote Windows/iOS/Android device to check in with Intune immediately.'
+  },
+  {
+    type: 'command',
+    title: 'Retire / Remove Intune Device',
+    keywords: ['retire device', 'remove intune', 'delete device', 'wipe company data'],
+    code: 'Invoke-MgDeviceManagementManagedDeviceRetire -ManagedDeviceId "<Device-ID>"',
+    desc: 'Removes company data from the device and unenrolls it from Intune (Leaves personal data intact).'
+  },
+  {
+    type: 'command',
+    title: 'List Windows Autopilot Devices',
+    keywords: ['autopilot', 'list autopilot', 'hardware hash', 'oobe'],
+    code: 'Get-MgDeviceManagementWindowsAutopilotDeviceIdentity',
+    desc: 'Lists all registered Windows Autopilot devices in your tenant.'
+  },
+
+  // ================= KNOWLEDGE BASE LINKS =================
+  {
+    type: 'kb',
+    title: 'Microsoft Entra ID Built-in Roles',
+    keywords: ['entra roles', 'azure ad roles', 'admin roles', 'permissions'],
+    url: 'https://learn.microsoft.com/en-us/entra/identity/role-based-access-control/permissions-reference'
+  },
+  {
+    type: 'kb',
+    title: 'Troubleshoot Windows Enrollment',
+    keywords: ['intune error', 'enrollment failed', 'windows autopilot error', 'mdm failed'],
+    url: 'https://learn.microsoft.com/en-us/troubleshoot/mem/intune/device-enrollment/troubleshoot-windows-enrollment-errors'
+  },
+  {
+    type: 'kb',
+    title: 'Message Trace in Security & Compliance',
+    keywords: ['message trace', 'exchange admin center', 'mail flow', 'compliance'],
+    url: 'https://learn.microsoft.com/en-us/microsoft-365/admin/manage/message-trace'
+  }
+];
+
+function processCommandMode(cmdQuery) {
+  const codeEl = document.getElementById('command-results-code');
+  const descEl = document.getElementById('command-results-desc');
+  const parts = cmdQuery.split(' ');
+  const baseCmd = parts[0];
+  const arg1 = parts[1] || '[target]';
+  const arg2 = parts[2] || '[port]';
+
+  let generated = '';
+  let desc = '';
+
+  switch (baseCmd) {
+    case 'ping':
+      generated = `ping ${arg1}`;
+      desc = `Sends ICMP Echo Requests to ${arg1} to test network connectivity.`;
+      break;
+    case 'trace':
+      generated = `tracert ${arg1}`;
+      desc = `Traces the network path to ${arg1}.`;
+      break;
+    case 'port':
+      generated = `Test-NetConnection -ComputerName ${arg1} -Port ${arg2}`;
+      desc = `PowerShell command to check if port ${arg2} is open on ${arg1}.`;
+      break;
+    case 'flushdns':
+      generated = `ipconfig /flushdns`;
+      desc = `Clears the local DNS cache.`;
+      break;
+    case 'gpupdate':
+      generated = `gpupdate /force`;
+      desc = `Forces a background update of all Group Policy settings.`;
+      break;
+    case 'sfc':
+      generated = `sfc /scannow`;
+      desc = `Scans all protected system files and replaces corrupted files (Requires Admin).`;
+      break;
+    default:
+      generated = `Unknown command. Try: /ping, /trace, /port, /flushdns, /gpupdate, /sfc`;
+      desc = `Example: /ping 1.1.1.1 or /port google.com 443`;
+      break;
+  }
+
+  codeEl.textContent = generated;
+  descEl.textContent = desc;
 }
 
 /**

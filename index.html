@@ -24,12 +24,14 @@
   <!-- macOS Top Menu Bar -->
   <div class="mac-menu-bar">
     <div class="mac-menu-left">
-      <i class="fa-brands fa-apple mac-menu-item apple-logo"></i>
+      <i class="fa-solid fa-rocket mac-menu-item launchpad-logo"></i>
       <span class="workspace-label mac-menu-item active-app">Thomas's Workspace</span>
       <button id="edit-mode-btn" class="mac-menu-item" style="background: none; border: none; color: inherit; font: inherit; padding: 0; cursor: pointer; display: flex; align-items: center; gap: 6px;">
         <i class="fa-solid fa-sliders"></i> Edit Workspace
       </button>
       <button id="workspace-settings-btn" class="mac-menu-item" style="background: none; border: none; color: inherit; font: inherit; padding: 0; cursor: pointer; display: flex; align-items: center; gap: 6px;"><i class="fa-solid fa-gear"></i> Settings</button>
+      <a href="reference.html" class="mac-menu-item" style="background: none; border: none; color: inherit; font: inherit; padding: 0; cursor: pointer; display: flex; align-items: center; gap: 6px; text-decoration: none;"><i class="fa-solid fa-book-journal-whills"></i> IT Reference</a>
+      <a href="powershell.html" class="mac-menu-item" style="background: none; border: none; color: inherit; font: inherit; padding: 0; cursor: pointer; display: flex; align-items: center; gap: 6px; text-decoration: none;"><i class="fa-solid fa-terminal"></i> PowerShell Basics</a>
     </div>
     
     <div class="mac-menu-center">
@@ -92,6 +94,24 @@
           <i class="fa-solid fa-circle-question"></i>
           <h4>No applications found</h4>
           <p>We couldn't find anything matching your search term. Try checking for typos or clear your filter.</p>
+        </div>
+
+        <!-- Command Mode Results -->
+        <div id="command-results" class="no-results-card" style="display: none; align-items: flex-start; text-align: left;">
+          <h4 style="margin-bottom: 12px; display: flex; align-items: center; gap: 8px;"><i class="fa-solid fa-terminal" style="color: var(--accent-color);"></i> Terminal Command Generator</h4>
+          <p id="command-results-desc" style="margin-bottom: 20px;">Type a command to generate the script.</p>
+          <div class="command-block" style="width: 100%; margin-bottom: 0;">
+            <div class="command-code-wrapper" style="box-shadow: none;">
+              <code class="command-code" id="command-results-code">/help</code>
+              <button class="copy-cmd-btn" id="command-results-copy" title="Copy to clipboard"><i class="fa-regular fa-copy"></i></button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Reference Search Results -->
+        <div id="reference-results" style="display: none; flex-direction: column; gap: 16px; margin-top: 20px;">
+          <h3 style="font-size: 1rem; color: var(--text-secondary); margin-bottom: 8px;"><i class="fa-solid fa-book-journal-whills"></i> IT Reference Suggestions</h3>
+          <div id="reference-results-list" style="display: flex; flex-direction: column; gap: 16px;"></div>
         </div>
       </section>
 

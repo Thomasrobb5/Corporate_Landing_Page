@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="IT Reference and Tools Cheat Sheet.">
+  <meta name="author" content="Thomas Robb">
+  <title>IT Reference | Corporate Launchpad</title>
+  <link rel="icon" type="image/png" href="favicon.png">
+
+  <!-- Google Fonts: Outfit & Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- FontAwesome Free Icons CDN -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+  <!-- Premium Stylesheet -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="theme-midnight-nebula">
+
+  <!-- macOS Top Menu Bar -->
+  <div class="mac-menu-bar">
+    <div class="mac-menu-left">
+      <i class="fa-solid fa-rocket mac-menu-item launchpad-logo"></i>
+      <span class="workspace-label mac-menu-item active-app">IT Reference & Tools</span>
+      <a href="index.html" class="mac-menu-item" style="background: none; border: none; color: inherit; font: inherit; padding: 0; cursor: pointer; display: flex; align-items: center; gap: 6px; text-decoration: none;">
+        <i class="fa-solid fa-arrow-left"></i> Back to Launchpad
+      </a>
+      <a href="powershell.html" class="mac-menu-item" style="background: none; border: none; color: inherit; font: inherit; padding: 0; cursor: pointer; display: flex; align-items: center; gap: 6px; text-decoration: none;">
+        <i class="fa-solid fa-terminal"></i> PowerShell Basics
+      </a>
+    </div>
+    
+    <div class="mac-menu-center">
+    </div>
+    <div class="mac-menu-right">
+      <span id="menu-time" class="mac-menu-item"></span>
+      <span id="menu-date" class="mac-menu-item"></span>
+    </div>
+  </div>
+
+  <!-- Animated Glassmorphic Background Blobs -->
+  <div class="bg-blobs" id="bg-blobs">
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+    <div class="blob blob-3"></div>
+  </div>
+
+  <!-- Dynamic Background Pattern Overlay -->
+  <div id="bg-pattern-overlay" class="bg-pattern-overlay"></div>
+
+  <div class="dashboard-container">
+    <div class="reference-content-wrapper" style="max-width: 1300px; width: 100%; margin: 0 auto;">
+      <!-- Header Welcome Bar -->
+      <header class="dashboard-header" style="margin-bottom: 40px;">
+        <div class="greeting-container">
+          <h1>IT Reference Library</h1>
+          <p class="subtitle">Quick access to Microsoft Knowledge Base and essential diagnostic commands.</p>
+        </div>
+      </header>
+
+    <!-- Main Grid Layout for Reference Page -->
+    <main class="reference-layout" style="display: grid; grid-template-columns: 320px minmax(0, 1fr); gap: 40px; padding-bottom: 60px;">
+      
+      <!-- Left Column: KB Links -->
+      <section class="reference-section" style="background: var(--card-bg); border: 1px solid var(--card-border); border-radius: var(--card-radius, 24px); padding: 24px; backdrop-filter: blur(var(--glass-blur, 20px)); -webkit-backdrop-filter: blur(var(--glass-blur, 20px)); box-shadow: var(--shadow-md);">
+        <h2 style="font-size: 1.25rem; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; color: var(--text-primary);">
+          <i class="fa-brands fa-microsoft" style="color: #00a4ef;"></i> Microsoft Knowledge Base
+        </h2>
+        
+        <div class="kb-category">
+          <h3 style="font-size: 0.95rem; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 12px; margin-top: 20px;">Exchange Online</h3>
+          <ul class="kb-list" style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 8px;">
+            <li><a href="https://learn.microsoft.com/en-us/exchange/exchange-online-limits" target="_blank" class="kb-link"><i class="fa-solid fa-arrow-up-right-from-square"></i> Exchange Online Limits</a></li>
+            <li><a href="https://learn.microsoft.com/en-us/microsoft-365/admin/manage/message-trace" target="_blank" class="kb-link"><i class="fa-solid fa-arrow-up-right-from-square"></i> Message Trace in Security & Compliance</a></li>
+            <li><a href="https://learn.microsoft.com/en-us/exchange/troubleshoot/outlook-issues/resolve-outlook-for-windows-issues" target="_blank" class="kb-link"><i class="fa-solid fa-arrow-up-right-from-square"></i> Troubleshoot Outlook for Windows</a></li>
+            <li><a href="https://learn.microsoft.com/en-us/microsoft-365/admin/email/create-a-shared-mailbox" target="_blank" class="kb-link"><i class="fa-solid fa-arrow-up-right-from-square"></i> Create a Shared Mailbox</a></li>
+            <li><a href="https://learn.microsoft.com/en-us/exchange/security-and-compliance/mail-flow-rules/mail-flow-rules" target="_blank" class="kb-link"><i class="fa-solid fa-arrow-up-right-from-square"></i> Mail Flow (Transport) Rules</a></li>
+          </ul>
+        </div>
+
+        <div class="kb-category">
+          <h3 style="font-size: 0.95rem; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 12px; margin-top: 24px;">Entra ID (Azure AD)</h3>
+          <ul class="kb-list" style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 8px;">
+            <li><a href="https://learn.microsoft.com/en-us/entra/identity/role-based-access-control/permissions-reference" target="_blank" class="kb-link"><i class="fa-solid fa-arrow-up-right-from-square"></i> Built-in Roles Permissions Reference</a></li>
+            <li><a href="https://learn.microsoft.com/en-us/entra/identity/authentication/concept-mfa-howitworks" target="_blank" class="kb-link"><i class="fa-solid fa-arrow-up-right-from-square"></i> How Microsoft Entra MFA works</a></li>
+            <li><a href="https://learn.microsoft.com/en-us/entra/identity/conditional-access/overview" target="_blank" class="kb-link"><i class="fa-solid fa-arrow-up-right-from-square"></i> Conditional Access Overview</a></li>
+            <li><a href="https://learn.microsoft.com/en-us/entra/identity/monitoring-health/concept-audit-logs" target="_blank" class="kb-link"><i class="fa-solid fa-arrow-up-right-from-square"></i> Audit Logs in Microsoft Entra ID</a></li>
+            <li><a href="https://learn.microsoft.com/en-us/entra/id-protection/overview-identity-protection" target="_blank" class="kb-link"><i class="fa-solid fa-arrow-up-right-from-square"></i> Entra ID Protection Overview</a></li>
+          </ul>
+        </div>
+
+        <div class="kb-category">
+          <h3 style="font-size: 0.95rem; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 12px; margin-top: 24px;">Intune & Endpoints</h3>
+          <ul class="kb-list" style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 8px;">
+            <li><a href="https://learn.microsoft.com/en-us/mem/intune/enrollment/windows-enrollment-methods" target="_blank" class="kb-link"><i class="fa-solid fa-arrow-up-right-from-square"></i> Windows Enrollment Methods</a></li>
+            <li><a href="https://learn.microsoft.com/en-us/troubleshoot/mem/intune/device-enrollment/troubleshoot-windows-enrollment-errors" target="_blank" class="kb-link"><i class="fa-solid fa-arrow-up-right-from-square"></i> Troubleshoot Windows Enrollment</a></li>
+            <li><a href="https://learn.microsoft.com/en-us/mem/intune/protect/device-compliance-get-started" target="_blank" class="kb-link"><i class="fa-solid fa-arrow-up-right-from-square"></i> Create Device Compliance Policies</a></li>
+            <li><a href="https://learn.microsoft.com/en-us/mem/intune/apps/apps-add" target="_blank" class="kb-link"><i class="fa-solid fa-arrow-up-right-from-square"></i> Add Apps to Microsoft Intune</a></li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- Right Column: Command Cheat Sheet -->
+      <section class="reference-section" style="background: var(--card-bg); border: 1px solid var(--card-border); border-radius: var(--card-radius, 24px); padding: 24px; backdrop-filter: blur(var(--glass-blur, 20px)); -webkit-backdrop-filter: blur(var(--glass-blur, 20px)); box-shadow: var(--shadow-md); display: flex; flex-direction: column; min-width: 0;">
+        <h2 style="font-size: 1.25rem; margin-bottom: 20px; display: flex; align-items: center; justify-content: space-between; color: var(--text-primary);">
+          <span><i class="fa-solid fa-terminal" style="color: var(--accent-color, #a855f7);"></i> Command Cheat Sheet</span>
+          <div class="command-tabs" style="display: flex; gap: 10px; font-size: 0.85rem;">
+            <button class="cmd-tab-btn active" data-target="tab-exchange">Exchange</button>
+            <button class="cmd-tab-btn" data-target="tab-entra">Entra ID</button>
+            <button class="cmd-tab-btn" data-target="tab-intune">Intune</button>
+            <button class="cmd-tab-btn" data-target="tab-diagnostics">Local</button>
+          </div>
+        </h2>
+        
+        <div class="command-tab-content active" id="tab-exchange" style="flex: 1; overflow-y: auto;">
+          <div class="command-block">
+            <div class="command-info">
+              <span class="command-title">Connect to Exchange Online</span>
+              <span class="command-desc">Establishes a PowerShell session to Exchange Online.</span>
+            </div>
+            <div class="command-code-wrapper">
+              <code class="command-code">Connect-ExchangeOnline -UserPrincipalName admin@domain.com</code>
+              <button class="copy-cmd-btn" title="Copy to clipboard"><i class="fa-regular fa-copy"></i></button>
+            </div>
+          </div>
+
+          <div class="command-block">
+            <div class="command-info">
+              <span class="command-title">Check Mailbox Statistics</span>
+              <span class="command-desc">View mailbox size, item count, and last logon time.</span>
+            </div>
+            <div class="command-code-wrapper">
+              <code class="command-code">Get-MailboxStatistics -Identity user@domain.com | Format-List DisplayName,ItemCount,TotalItemSize,LastLogonTime</code>
+              <button class="copy-cmd-btn" title="Copy to clipboard"><i class="fa-regular fa-copy"></i></button>
+            </div>
+          </div>
+
+          <div class="command-block">
+            <div class="command-info">
+              <span class="command-title">Set Out of Office (Auto Reply)</span>
+              <span class="command-desc">Configure an auto-reply for a specific user.</span>
+            </div>
+            <div class="command-code-wrapper">
+              <code class="command-code">Set-MailboxAutoReplyConfiguration -Identity user@domain.com -AutoReplyState Enabled -InternalMessage "I am out of the office." -ExternalMessage "I am out of the office."</code>
+              <button class="copy-cmd-btn" title="Copy to clipboard"><i class="fa-regular fa-copy"></i></button>
+            </div>
+          </div>
+
+          <div class="command-block">
+            <div class="command-info">
+              <span class="command-title">Grant Full Access Delegate Permission</span>
+              <span class="command-desc">Give an admin or manager full access to another mailbox.</span>
+            </div>
+            <div class="command-code-wrapper">
+              <code class="command-code">Add-MailboxPermission -Identity target@domain.com -User admin@domain.com -AccessRights FullAccess -InheritanceType All</code>
+              <button class="copy-cmd-btn" title="Copy to clipboard"><i class="fa-regular fa-copy"></i></button>
+            </div>
+          </div>
+          
+          <div class="command-block">
+            <div class="command-info">
+              <span class="command-title">Grant Send As Permission</span>
+              <span class="command-desc">Allow a user to send emails from a shared mailbox.</span>
+            </div>
+            <div class="command-code-wrapper">
+              <code class="command-code">Add-RecipientPermission -Identity shared@domain.com -Trustee user@domain.com -AccessRights SendAs</code>
+              <button class="copy-cmd-btn" title="Copy to clipboard"><i class="fa-regular fa-copy"></i></button>
+            </div>
+          </div>
+
+          <div class="command-block">
+            <div class="command-info">
+              <span class="command-title">Message Trace (Last 48 Hours)</span>
+              <span class="command-desc">Find emails sent to a specific user recently.</span>
+            </div>
+            <div class="command-code-wrapper">
+              <code class="command-code">Get-MessageTrace -RecipientAddress user@domain.com -StartDate (Get-Date).AddDays(-2) -EndDate (Get-Date)</code>
+              <button class="copy-cmd-btn" title="Copy to clipboard"><i class="fa-regular fa-copy"></i></button>
+            </div>
+          </div>
+        </div>
+
+        <div class="command-tab-content" id="tab-entra" style="display: none; flex: 1; overflow-y: auto;">
+          <div class="command-block">
+            <div class="command-info">
+              <span class="command-title">Connect to Microsoft Graph (Entra ID)</span>
+              <span class="command-desc">Establishes a session for modern Entra ID and M365 management.</span>
+            </div>
+            <div class="command-code-wrapper">
+              <code class="command-code">Connect-MgGraph -Scopes "User.ReadWrite.All", "Group.ReadWrite.All", "Directory.ReadWrite.All"</code>
+              <button class="copy-cmd-btn" title="Copy to clipboard"><i class="fa-regular fa-copy"></i></button>
+            </div>
+          </div>
+
+          <div class="command-block">
+            <div class="command-info">
+              <span class="command-title">Force Azure AD Sync (AD Connect)</span>
+              <span class="command-desc">Run this on your AD Connect server to force an immediate delta sync.</span>
+            </div>
+            <div class="command-code-wrapper">
+              <code class="command-code">Start-ADSyncSyncCycle -PolicyType Delta</code>
+              <button class="copy-cmd-btn" title="Copy to clipboard"><i class="fa-regular fa-copy"></i></button>
+            </div>
+          </div>
+
+          <div class="command-block">
+            <div class="command-info">
+              <span class="command-title">Reset User Password</span>
+              <span class="command-desc">Resets a user password and forces them to change it at next login.</span>
+            </div>
+            <div class="command-code-wrapper">
+              <code class="command-code">Update-MgUser -UserId user@domain.com -PasswordProfile @{ForceChangePasswordNextSignIn=$true; Password="NewTempPassword123!"}</code>
+              <button class="copy-cmd-btn" title="Copy to clipboard"><i class="fa-regular fa-copy"></i></button>
+            </div>
+          </div>
+
+          <div class="command-block">
+            <div class="command-info">
+              <span class="command-title">Block User Sign-in</span>
+              <span class="command-desc">Immediately blocks a user from signing in (useful during security incidents).</span>
+            </div>
+            <div class="command-code-wrapper">
+              <code class="command-code">Update-MgUser -UserId user@domain.com -AccountEnabled $false</code>
+              <button class="copy-cmd-btn" title="Copy to clipboard"><i class="fa-regular fa-copy"></i></button>
+            </div>
+          </div>
+          
+          <div class="command-block">
+            <div class="command-info">
+              <span class="command-title">Add User to Entra Group</span>
+              <span class="command-desc">Adds a user to a Microsoft Entra ID group using Object IDs.</span>
+            </div>
+            <div class="command-code-wrapper">
+              <code class="command-code">New-MgGroupMember -GroupId "&lt;Group-Object-ID&gt;" -DirectoryObjectId "&lt;User-Object-ID&gt;"</code>
+              <button class="copy-cmd-btn" title="Copy to clipboard"><i class="fa-regular fa-copy"></i></button>
+            </div>
+          </div>
+        </div>
+
+        <div class="command-tab-content" id="tab-intune" style="display: none; flex: 1; overflow-y: auto;">
+          <div class="command-block">
+            <div class="command-info">
+              <span class="command-title">Force Intune Device Sync</span>
+              <span class="command-desc">Forces a remote Windows/iOS/Android device to check in with Intune immediately.</span>
+            </div>
+            <div class="command-code-wrapper">
+              <code class="command-code">Invoke-MgDeviceManagementManagedDeviceSyncDevice -ManagedDeviceId "&lt;Device-ID&gt;"</code>
+              <button class="copy-cmd-btn" title="Copy to clipboard"><i class="fa-regular fa-copy"></i></button>
+            </div>
+          </div>
+
+          <div class="command-block">
+            <div class="command-info">
+              <span class="command-title">Retire / Remove Intune Device</span>
+              <span class="command-desc">Removes company data from the device and unenrolls it from Intune (Leaves personal data intact).</span>
+            </div>
+            <div class="command-code-wrapper">
+              <code class="command-code">Invoke-MgDeviceManagementManagedDeviceRetire -ManagedDeviceId "&lt;Device-ID&gt;"</code>
+              <button class="copy-cmd-btn" title="Copy to clipboard"><i class="fa-regular fa-copy"></i></button>
+            </div>
+          </div>
+
+          <div class="command-block">
+            <div class="command-info">
+              <span class="command-title">List Windows Autopilot Devices</span>
+              <span class="command-desc">Lists all registered Windows Autopilot devices in your tenant.</span>
+            </div>
+            <div class="command-code-wrapper">
+              <code class="command-code">Get-MgDeviceManagementWindowsAutopilotDeviceIdentity</code>
+              <button class="copy-cmd-btn" title="Copy to clipboard"><i class="fa-regular fa-copy"></i></button>
+            </div>
+          </div>
+        </div>
+
+        <div class="command-tab-content" id="tab-diagnostics" style="display: none; flex: 1; overflow-y: auto;">
+          
+          <div class="command-block">
+            <div class="command-info">
+              <span class="command-title">Force Group Policy Update</span>
+              <span class="command-desc">Applies all new GPOs to the machine immediately.</span>
+            </div>
+            <div class="command-code-wrapper">
+              <code class="command-code">gpupdate /force</code>
+              <button class="copy-cmd-btn" title="Copy to clipboard"><i class="fa-regular fa-copy"></i></button>
+            </div>
+          </div>
+
+          <div class="command-block">
+            <div class="command-info">
+              <span class="command-title">Clear DNS Cache</span>
+              <span class="command-desc">Resolves issues where a website recently changed its IP.</span>
+            </div>
+            <div class="command-code-wrapper">
+              <code class="command-code">ipconfig /flushdns</code>
+              <button class="copy-cmd-btn" title="Copy to clipboard"><i class="fa-regular fa-copy"></i></button>
+            </div>
+          </div>
+
+          <div class="command-block">
+            <div class="command-info">
+              <span class="command-title">Release and Renew IP</span>
+              <span class="command-desc">Drop current DHCP lease and request a new one.</span>
+            </div>
+            <div class="command-code-wrapper">
+              <code class="command-code">ipconfig /release && ipconfig /renew</code>
+              <button class="copy-cmd-btn" title="Copy to clipboard"><i class="fa-regular fa-copy"></i></button>
+            </div>
+          </div>
+
+          <div class="command-block">
+            <div class="command-info">
+              <span class="command-title">Test Network Port (PowerShell)</span>
+              <span class="command-desc">Check if a specific port (e.g. 443) is open to a destination.</span>
+            </div>
+            <div class="command-code-wrapper">
+              <code class="command-code">Test-NetConnection -ComputerName example.com -Port 443</code>
+              <button class="copy-cmd-btn" title="Copy to clipboard"><i class="fa-regular fa-copy"></i></button>
+            </div>
+          </div>
+
+          <div class="command-block">
+            <div class="command-info">
+              <span class="command-title">System File Checker</span>
+              <span class="command-desc">Scan and repair corrupted Windows system files. (Run as Admin)</span>
+            </div>
+            <div class="command-code-wrapper">
+              <code class="command-code">sfc /scannow</code>
+              <button class="copy-cmd-btn" title="Copy to clipboard"><i class="fa-regular fa-copy"></i></button>
+            </div>
+          </div>
+
+          <div class="command-block">
+            <div class="command-info">
+              <span class="command-title">Check Disk</span>
+              <span class="command-desc">Scan the C: drive for file system errors. (Run as Admin)</span>
+            </div>
+            <div class="command-code-wrapper">
+              <code class="command-code">chkdsk C: /f /r</code>
+              <button class="copy-cmd-btn" title="Copy to clipboard"><i class="fa-regular fa-copy"></i></button>
+            </div>
+          </div>
+
+          <div class="command-block">
+            <div class="command-info">
+              <span class="command-title">Trace Route (Diagnostics)</span>
+              <span class="command-desc">Trace the path packets take to a network host.</span>
+            </div>
+            <div class="command-code-wrapper">
+              <code class="command-code">tracert example.com</code>
+              <button class="copy-cmd-btn" title="Copy to clipboard"><i class="fa-regular fa-copy"></i></button>
+            </div>
+          </div>
+
+          <div class="command-block">
+            <div class="command-info">
+              <span class="command-title">DNS Lookup</span>
+              <span class="command-desc">Query DNS to find IP addresses or specific DNS records.</span>
+            </div>
+            <div class="command-code-wrapper">
+              <code class="command-code">nslookup example.com</code>
+              <button class="copy-cmd-btn" title="Copy to clipboard"><i class="fa-regular fa-copy"></i></button>
+            </div>
+          </div>
+
+          <div class="command-block">
+            <div class="command-info">
+              <span class="command-title">Check Listening Ports</span>
+              <span class="command-desc">See which processes are listening on which network ports.</span>
+            </div>
+            <div class="command-code-wrapper">
+              <code class="command-code">netstat -ano | findstr LISTENING</code>
+              <button class="copy-cmd-btn" title="Copy to clipboard"><i class="fa-regular fa-copy"></i></button>
+            </div>
+          </div>
+
+          <div class="command-block">
+            <div class="command-info">
+              <span class="command-title">Find Top CPU Processes (PowerShell)</span>
+              <span class="command-desc">Quickly view the top 5 processes consuming the most CPU.</span>
+            </div>
+            <div class="command-code-wrapper">
+              <code class="command-code">Get-Process | Sort-Object CPU -Descending | Select-Object -First 5</code>
+              <button class="copy-cmd-btn" title="Copy to clipboard"><i class="fa-regular fa-copy"></i></button>
+            </div>
+          </div>
+
+          <div class="command-block">
+            <div class="command-info">
+              <span class="command-title">Restart Explorer</span>
+              <span class="command-desc">Fixes issues where the Windows taskbar or file explorer hangs.</span>
+            </div>
+            <div class="command-code-wrapper">
+              <code class="command-code">Stop-Process -Name explorer -Force</code>
+              <button class="copy-cmd-btn" title="Copy to clipboard"><i class="fa-regular fa-copy"></i></button>
+            </div>
+          </div>
+
+        </div>
+
+      </section>
+
+    </main>
+    </div> <!-- End reference-content-wrapper -->
+  </div>
+
+  <script src="reference.js"></script>
+</body>
+</html>
