@@ -134,13 +134,14 @@
           <section class="reference-section" style="background: var(--card-bg); border: 1px solid var(--card-border); border-radius: var(--card-radius, 24px); padding: 24px; backdrop-filter: blur(var(--glass-blur, 20px)); -webkit-backdrop-filter: blur(var(--glass-blur, 20px)); box-shadow: var(--shadow-md);">
             <h3 style="font-size: 1rem; color: var(--text-secondary); margin-bottom: 16px; text-transform: uppercase; letter-spacing: 1px;">Table of Contents</h3>
             <nav style="display: flex; flex-direction: column; gap: 4px;">
-              <a href="#intro" class="ps-nav-link"><i class="fa-solid fa-book-open"></i> 1. Introduction & Discovery</a>
-              <a href="#variables" class="ps-nav-link"><i class="fa-solid fa-box-open"></i> 2. Variables & Data Types</a>
-              <a href="#pipeline" class="ps-nav-link"><i class="fa-solid fa-arrow-right-arrow-left"></i> 3. The Pipeline</a>
-              <a href="#logic" class="ps-nav-link"><i class="fa-solid fa-code-branch"></i> 4. Logic & Loops</a>
-              <a href="#modules" class="ps-nav-link"><i class="fa-solid fa-cubes"></i> 5. Modules & Policies</a>
-              <a href="#graph" class="ps-nav-link"><i class="fa-solid fa-network-wired"></i> 6. Microsoft Graph API</a>
-              <a href="#intune" class="ps-nav-link"><i class="fa-solid fa-laptop-medical"></i> 7. Intune Remediations</a>
+              <a href="#env" class="ps-nav-link"><i class="fa-solid fa-laptop-code"></i> 1. Environments & Versions</a>
+              <a href="#intro" class="ps-nav-link"><i class="fa-solid fa-book-open"></i> 2. Discovery & Objects</a>
+              <a href="#variables" class="ps-nav-link"><i class="fa-solid fa-box-open"></i> 3. Variables & Data Types</a>
+              <a href="#pipeline" class="ps-nav-link"><i class="fa-solid fa-arrow-right-arrow-left"></i> 4. The Pipeline</a>
+              <a href="#logic" class="ps-nav-link"><i class="fa-solid fa-code-branch"></i> 5. Logic & Loops</a>
+              <a href="#modules" class="ps-nav-link"><i class="fa-solid fa-cubes"></i> 6. Modules & Policies</a>
+              <a href="#graph" class="ps-nav-link"><i class="fa-solid fa-network-wired"></i> 7. Microsoft Graph API</a>
+              <a href="#intune" class="ps-nav-link"><i class="fa-solid fa-laptop-medical"></i> 8. Intune Remediations</a>
             </nav>
           </section>
         </aside>
@@ -148,8 +149,33 @@
         <section class="reference-section" style="background: var(--card-bg); border: 1px solid var(--card-border); border-radius: var(--card-radius, 24px); padding: 40px; backdrop-filter: blur(var(--glass-blur, 20px)); -webkit-backdrop-filter: blur(var(--glass-blur, 20px)); box-shadow: var(--shadow-md); min-width: 0;">
           
           <!-- SECTION 1 -->
+          <div id="env" class="ps-content-section">
+            <h2><i class="fa-solid fa-laptop-code" style="color: var(--accent-color);"></i> 1. Environments & Versions</h2>
+            <p>Before writing scripts, you need to know <i>where</i> to write them and <i>what version</i> you are running.</p>
+
+            <h3>PowerShell 5.1 vs PowerShell 7</h3>
+            <p>There are two distinct families of PowerShell today:</p>
+            <ul>
+              <li><strong>Windows PowerShell 5.1:</strong> This is the legacy version built directly into Windows 10 and 11. It is accessible via the blue <code>powershell.exe</code> window. Microsoft is no longer adding new features to 5.1, but it remains the bedrock of Windows administration because it is guaranteed to exist on every endpoint.</li>
+              <li><strong>PowerShell 7 (Core):</strong> This is the modern, open-source, cross-platform version of PowerShell (it runs on Windows, macOS, and Linux). It is accessible via the black <code>pwsh.exe</code> window. It is significantly faster and has modern language features, but you must download and install it manually.</li>
+            </ul>
+
+            <div class="ps-alert ps-alert-info">
+              <h4><i class="fa-solid fa-lightbulb"></i> Which should I use?</h4>
+              <p>Write scripts in <strong>PowerShell 7</strong> for your own daily administration, but test your scripts in <strong>PowerShell 5.1</strong> if you plan to deploy them to end-user laptops via Intune (since Intune uses 5.1 by default).</p>
+            </div>
+
+            <h3>The Code Editors (IDE)</h3>
+            <p>You can type commands directly into the terminal window, but when writing multi-line scripts, you need an editor.</p>
+            <ul>
+              <li><strong>PowerShell ISE:</strong> The "Integrated Scripting Environment" is built into Windows. It provides a split-screen view with a script editor on top and a terminal on the bottom. While classic, Microsoft has deprecated it and it <i>cannot</i> run PowerShell 7.</li>
+              <li><strong>Visual Studio Code (VS Code):</strong> The undisputed modern standard. VS Code is a free, lightweight editor by Microsoft. By installing the "PowerShell Extension" in VS Code, you get deep IntelliSense (autocomplete), debugging, formatting, and full support for both PowerShell 5.1 and 7. <strong>This is what you should be using.</strong></li>
+            </ul>
+          </div>
+
+          <!-- SECTION 2 -->
           <div id="intro" class="ps-content-section">
-            <h2><i class="fa-solid fa-book-open" style="color: var(--accent-color);"></i> 1. Introduction & Discovery</h2>
+            <h2><i class="fa-solid fa-book-open" style="color: var(--accent-color);"></i> 2. Discovery & Objects</h2>
             <p>Welcome to PowerShell. If you are coming from Command Prompt (CMD) or Linux Bash, the most important thing to learn is this: <strong>PowerShell does not output text, it outputs Objects.</strong></p>
             <p>An object is a data structure that contains properties (information) and methods (actions). When you run a command to get a user, you aren't getting a string of text that says "John Doe". You are getting a User Object that contains a <code>FirstName</code> property, a <code>LastName</code> property, an <code>IsActive</code> property, etc.</p>
 
@@ -195,9 +221,9 @@ Get-Process | Get-Member</code>
             </div>
           </div>
 
-          <!-- SECTION 2 -->
+          <!-- SECTION 3 -->
           <div id="variables" class="ps-content-section">
-            <h2><i class="fa-solid fa-box-open" style="color: var(--accent-color);"></i> 2. Variables & Data Types</h2>
+            <h2><i class="fa-solid fa-box-open" style="color: var(--accent-color);"></i> 3. Variables & Data Types</h2>
             <p>Variables act as containers to store information so you can use it later. In PowerShell, variables always start with a dollar sign (<code class="inline-code">$</code>).</p>
 
             <h3>Basic Variables</h3>
@@ -246,9 +272,9 @@ Write-Output $userDepartments["user1@domain.com"]  # Outputs: Sales</code>
             </div>
           </div>
 
-          <!-- SECTION 3 -->
+          <!-- SECTION 4 -->
           <div id="pipeline" class="ps-content-section">
-            <h2><i class="fa-solid fa-arrow-right-arrow-left" style="color: var(--accent-color);"></i> 3. The Pipeline</h2>
+            <h2><i class="fa-solid fa-arrow-right-arrow-left" style="color: var(--accent-color);"></i> 4. The Pipeline</h2>
             <p>The Pipeline (<code class="inline-code">|</code>) is the heart of PowerShell. It takes the output of the command on the left, and passes it directly as the input to the command on the right.</p>
             <p>Because PowerShell passes objects, the receiving command understands all the properties of the data being passed to it.</p>
 
@@ -276,9 +302,9 @@ Get-Mailbox | Select-Object DisplayName, PrimarySmtpAddress</code>
             </div>
           </div>
 
-          <!-- SECTION 4 -->
+          <!-- SECTION 5 -->
           <div id="logic" class="ps-content-section">
-            <h2><i class="fa-solid fa-code-branch" style="color: var(--accent-color);"></i> 4. Logic & Loops</h2>
+            <h2><i class="fa-solid fa-code-branch" style="color: var(--accent-color);"></i> 5. Logic & Loops</h2>
             <p>Scripts become powerful when they can make decisions and perform repetitive tasks automatically.</p>
 
             <h3>If / ElseIf / Else</h3>
@@ -313,9 +339,9 @@ foreach ($server in $servers) {
             </div>
           </div>
 
-          <!-- SECTION 5 -->
+          <!-- SECTION 6 -->
           <div id="modules" class="ps-content-section">
-            <h2><i class="fa-solid fa-cubes" style="color: var(--accent-color);"></i> 5. Modules & Policies</h2>
+            <h2><i class="fa-solid fa-cubes" style="color: var(--accent-color);"></i> 6. Modules & Policies</h2>
             <p>PowerShell out-of-the-box only knows how to manage Windows. To manage Exchange, Intune, or VMware, you must install additional "instruction manuals" called Modules.</p>
 
             <h3>Execution Policies</h3>
@@ -343,9 +369,9 @@ Import-Module ExchangeOnlineManagement</code>
             </div>
           </div>
 
-          <!-- SECTION 6 -->
+          <!-- SECTION 7 -->
           <div id="graph" class="ps-content-section">
-            <h2><i class="fa-solid fa-network-wired" style="color: var(--accent-color);"></i> 6. Microsoft Graph API</h2>
+            <h2><i class="fa-solid fa-network-wired" style="color: var(--accent-color);"></i> 7. Microsoft Graph API</h2>
             <p>Historically, admins used the <code>AzureAD</code> or <code>MSOnline</code> modules to manage Office 365. These are now deprecated. The modern standard is the <strong>Microsoft Graph PowerShell SDK</strong>.</p>
 
             <div class="ps-alert ps-alert-warning">
@@ -374,9 +400,9 @@ Find-MgGraphCommand -Command Update-MgUser | Select-Object -ExpandProperty Permi
             </div>
           </div>
 
-          <!-- SECTION 7 -->
+          <!-- SECTION 8 -->
           <div id="intune" class="ps-content-section" style="margin-bottom: 0;">
-            <h2><i class="fa-solid fa-laptop-medical" style="color: var(--accent-color);"></i> 7. Intune Proactive Remediations</h2>
+            <h2><i class="fa-solid fa-laptop-medical" style="color: var(--accent-color);"></i> 8. Intune Proactive Remediations</h2>
             <p>Proactive Remediations are a powerful feature of Microsoft Intune that allows you to deploy scripts to endpoints to automatically detect and resolve common issues before users submit a helpdesk ticket.</p>
 
             <h3>The Two-Script System</h3>
