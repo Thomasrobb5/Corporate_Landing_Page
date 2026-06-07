@@ -90,6 +90,90 @@
       font-family: monospace;
       color: var(--accent-color);
     }
+    
+    /* Script Dissection Styles */
+    .dissection-container {
+      margin-top: 24px;
+      position: relative;
+    }
+    
+    .script-view {
+      background: rgba(0, 0, 0, 0.2);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 24px;
+      overflow-x: auto;
+      font-family: 'Consolas', monospace;
+      font-size: 0.95rem;
+      line-height: 1.6;
+      color: #e0e0e0;
+      box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.1);
+      width: 100%;
+    }
+    
+    .script-view code {
+      display: block;
+      white-space: pre;
+    }
+    
+    .hover-token {
+      border-bottom: 1px dashed rgba(255,255,255,0.4);
+      cursor: help;
+      transition: all 0.2s ease;
+      padding: 2px 4px;
+      margin: 0 -2px;
+      border-radius: 4px;
+    }
+    
+    .hover-token:hover, .hover-token.active {
+      background: rgba(59, 130, 246, 0.25);
+      color: #ffffff;
+      border-bottom-color: transparent;
+      box-shadow: 0 0 10px rgba(59, 130, 246, 0.2);
+    }
+    
+    .floating-tooltip {
+      position: absolute;
+      background: rgba(30, 41, 59, 0.95);
+      border: 1px solid var(--accent-color);
+      border-radius: 8px;
+      padding: 16px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+      width: max-content;
+      max-width: 350px;
+      z-index: 1000;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.2s ease, transform 0.2s ease;
+      transform: translateY(10px);
+      left: 0;
+      top: 0;
+    }
+    
+    .floating-tooltip.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .tooltip-header {
+      font-weight: 600;
+      color: var(--accent-color);
+      margin-bottom: 8px;
+      font-size: 1.05rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+      padding-bottom: 8px;
+    }
+
+    .tooltip-body {
+      color: #f1f5f9;
+      font-size: 0.95rem;
+      line-height: 1.5;
+    }
   </style>
 </head>
 <body class="theme-corporate-azure">
@@ -142,6 +226,7 @@
               <a href="#modules" class="ps-nav-link"><i class="fa-solid fa-cubes"></i> 6. Modules & Policies</a>
               <a href="#graph" class="ps-nav-link"><i class="fa-solid fa-network-wired"></i> 7. Microsoft Graph API</a>
               <a href="#intune" class="ps-nav-link"><i class="fa-solid fa-laptop-medical"></i> 8. Intune Remediations</a>
+              <a href="#dissection" class="ps-nav-link"><i class="fa-solid fa-microscope"></i> 9. Script Dissection</a>
             </nav>
           </section>
         </aside>
@@ -401,7 +486,7 @@ Find-MgGraphCommand -Command Update-MgUser | Select-Object -ExpandProperty Permi
           </div>
 
           <!-- SECTION 8 -->
-          <div id="intune" class="ps-content-section" style="margin-bottom: 0;">
+          <div id="intune" class="ps-content-section">
             <h2><i class="fa-solid fa-laptop-medical" style="color: var(--accent-color);"></i> 8. Intune Proactive Remediations</h2>
             <p>Proactive Remediations are a powerful feature of Microsoft Intune that allows you to deploy scripts to endpoints to automatically detect and resolve common issues before users submit a helpdesk ticket.</p>
 
@@ -460,6 +545,35 @@ Find-MgGraphCommand -Command Update-MgUser | Select-Object -ExpandProperty Permi
 
           </div>
 
+          <!-- SECTION 9 -->
+          <div id="dissection" class="ps-content-section" style="margin-bottom: 0;">
+            <h2><i class="fa-solid fa-microscope" style="color: var(--accent-color);"></i> 9. Script Dissection</h2>
+            <p>To put everything together, let's look at a complete, real-world script. Hover over the underlined sections of the code below to understand exactly what each piece does.</p>
+            
+            <div class="dissection-container">
+              <div class="script-view">
+<code><span class="hover-token" data-title="Comments" data-info="Lines starting with '#' are comments. They are ignored by PowerShell and are purely to help humans understand the code."># Define the registry path and property name</span>
+<span class="hover-token" data-title="Variables" data-info="Variables start with '$'. Here, we are storing the long registry path as a string so we don't have to type it out multiple times later.">$registryPath</span> = <span class="hover-token" data-title="Strings" data-info="Text enclosed in quotes is a String. Notice 'HKLM:\' - PowerShell can navigate the Registry exactly like a file system drive.">"HKLM:\SYSTEM\CurrentControlSet\Control\FileSystem"</span>
+$name = "LongPathsEnabled"
+
+<span class="hover-token" data-title="Comments" data-info="Another comment explaining the next block of code."># Retrieve the current registry value</span>
+$currentValue = (<span class="hover-token" data-title="Get-ItemProperty" data-info="This command reads a specific value from the registry.">Get-ItemProperty</span> <span class="hover-token" data-title="Parameters" data-info="Parameters start with a dash. We are passing the path and name variables we defined earlier to tell the command exactly what to read.">-Path $registryPath -Name $name</span> <span class="hover-token" data-title="ErrorAction" data-info="If the key doesn't exist, this parameter tells PowerShell to silently continue without throwing a red error on the screen.">-ErrorAction SilentlyContinue</span>).<span class="hover-token" data-title="Property Access" data-info="The command returns an object. Adding '.$name' at the end extracts only the specific property value we care about.">$name</span>
+
+<span class="hover-token" data-title="Comments" data-info="Checking if we need to take action."># Check if the value needs to be updated</span>
+<span class="hover-token" data-title="If Statement" data-info="An 'if' statement evaluates a condition. If it is true, the code inside the curly braces '{ }' will run.">if</span> ($currentValue <span class="hover-token" data-title="Comparison Operator" data-info="'-ne' stands for Not Equal. We are checking if the current registry value is NOT equal to 1.">-ne</span> 1) {
+    <span class="hover-token" data-title="Write-Host" data-info="Write-Host prints text directly to the console so the user can read it.">Write-Host</span> "Long file paths are not enabled. Updating registry..."
+    
+    <span class="hover-token" data-title="Set-ItemProperty" data-info="This command creates or updates a registry key value.">Set-ItemProperty</span> -Path $registryPath -Name $name <span class="hover-token" data-title="Setting Values" data-info="We are setting the value to 1 (Enabled) and specifying that it should be a DWord (Integer) data type.">-Value 1 -Type DWord</span> <span class="hover-token" data-title="Force Parameter" data-info="'-Force' ensures the command executes even if there is an existing value, overwriting it without prompting the user.">-Force</span>
+    
+    Write-Host "Successfully enabled long file paths."
+} <span class="hover-token" data-title="Else Statement" data-info="If the initial condition was false (meaning the value IS already 1), this block of code will run instead.">else</span> {
+    Write-Host "Long file paths are already enabled. No action required."
+}</code>
+              </div>
+
+            </div>
+          </div>
+
         </section>
 
       </main>
@@ -477,7 +591,50 @@ Find-MgGraphCommand -Command Update-MgUser | Select-Object -ExpandProperty Permi
           this.classList.add('active');
         });
       });
+      
+      // Script Dissection Logic
+      const hoverTokens = document.querySelectorAll('.hover-token');
+      const tooltip = document.getElementById('floating-tooltip');
+      const tooltipTitle = document.getElementById('tooltip-title');
+      const tooltipText = document.getElementById('tooltip-text');
+      
+      hoverTokens.forEach(token => {
+        token.addEventListener('mouseenter', (e) => {
+          token.classList.add('active');
+          tooltipTitle.textContent = token.getAttribute('data-title');
+          tooltipText.textContent = token.getAttribute('data-info');
+          
+          tooltip.classList.add('show');
+          
+          const tokenRect = token.getBoundingClientRect();
+          
+          // Calculate top and left relative to the document
+          let left = tokenRect.left + (tokenRect.width / 2) - (tooltip.offsetWidth / 2) + window.scrollX;
+          let top = tokenRect.top - tooltip.offsetHeight - 15 + window.scrollY;
+          
+          // Prevent tooltip from going off the left/right screen edges
+          if (left < 10) left = 10;
+          if (left + tooltip.offsetWidth > window.innerWidth - 10) left = window.innerWidth - tooltip.offsetWidth - 10;
+          
+          // If it goes above the screen, show it below the token
+          if (top < window.scrollY + 10) {
+              top = tokenRect.bottom + 15 + window.scrollY;
+          }
+          
+          tooltip.style.left = left + 'px';
+          tooltip.style.top = top + 'px';
+        });
+        
+        token.addEventListener('mouseleave', () => {
+          token.classList.remove('active');
+          tooltip.classList.remove('show');
+        });
+      });
     });
   </script>
+  <div id="floating-tooltip" class="floating-tooltip">
+    <div class="tooltip-header"><i class="fa-solid fa-info-circle"></i> <span id="tooltip-title">Title</span></div>
+    <div class="tooltip-body" id="tooltip-text">Description</div>
+  </div>
 </body>
 </html>

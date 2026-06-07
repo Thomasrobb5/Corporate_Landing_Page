@@ -18,6 +18,115 @@
 
   <!-- Premium Stylesheet -->
   <link rel="stylesheet" href="style.css">
+  <style>
+    /* Interactive Hub Styles */
+    .interactive-accordion {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: var(--card-radius, 24px);
+      padding: 20px 24px;
+      backdrop-filter: blur(var(--glass-blur, 20px));
+      -webkit-backdrop-filter: blur(var(--glass-blur, 20px));
+      box-shadow: var(--shadow-md);
+      transition: all 0.3s ease;
+    }
+    
+    .interactive-accordion[open] {
+      padding-bottom: 24px;
+    }
+
+    .accordion-header {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      list-style: none; /* Hide default arrow */
+      position: relative;
+    }
+    
+    .accordion-header::-webkit-details-marker {
+      display: none;
+    }
+
+    .accordion-icon {
+      margin-left: auto;
+      transition: transform 0.3s ease;
+      color: var(--text-secondary);
+      font-size: 1rem;
+    }
+
+    .interactive-accordion[open] .accordion-icon {
+      transform: rotate(180deg);
+    }
+    
+    .accordion-header:focus {
+      outline: none;
+    }
+
+    /* Script Repo Styles */
+    #script-search-input:focus {
+      outline: none;
+      border-color: var(--accent-color);
+      box-shadow: 0 0 0 2px rgba(168, 85, 247, 0.2);
+    }
+    
+    .script-card {
+      background: rgba(0, 0, 0, 0.2);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: 12px;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    
+    .script-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 10px;
+    }
+    
+    .script-title-row {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    
+    .script-title {
+      font-weight: 600;
+      color: #fff;
+      font-size: 1.05rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .script-desc {
+      color: var(--text-secondary);
+      font-size: 0.95rem;
+      line-height: 1.5;
+    }
+    
+    .script-badge {
+      font-size: 0.75rem;
+      padding: 4px 10px;
+      border-radius: 12px;
+      background: rgba(16, 185, 129, 0.15);
+      color: #34d399;
+      white-space: nowrap;
+      font-weight: 500;
+      border: 1px solid rgba(52, 211, 153, 0.3);
+    }
+    
+    .script-badge.exchange { background: rgba(0, 164, 239, 0.15); color: #7dd3fc; border-color: rgba(0, 164, 239, 0.3); }
+    .script-badge.entra { background: rgba(59, 130, 246, 0.15); color: #93c5fd; border-color: rgba(59, 130, 246, 0.3); }
+    .script-badge.intune { background: rgba(139, 92, 246, 0.15); color: #c4b5fd; border-color: rgba(139, 92, 246, 0.3); }
+    .script-badge.network { background: rgba(245, 158, 11, 0.15); color: #fcd34d; border-color: rgba(245, 158, 11, 0.3); }
+  </style>
 </head>
 <body class="theme-midnight-nebula">
 
@@ -104,17 +213,22 @@
         </div>
       </section>
 
-      <!-- Right Column: Command Cheat Sheet -->
-      <section class="reference-section" style="background: var(--card-bg); border: 1px solid var(--card-border); border-radius: var(--card-radius, 24px); padding: 24px; backdrop-filter: blur(var(--glass-blur, 20px)); -webkit-backdrop-filter: blur(var(--glass-blur, 20px)); box-shadow: var(--shadow-md); display: flex; flex-direction: column; min-width: 0;">
-        <h2 style="font-size: 1.25rem; margin-bottom: 20px; display: flex; align-items: center; justify-content: space-between; color: var(--text-primary);">
-          <span><i class="fa-solid fa-terminal" style="color: var(--accent-color, #a855f7);"></i> Command Cheat Sheet</span>
-          <div class="command-tabs" style="display: flex; gap: 10px; font-size: 0.85rem;">
-            <button class="cmd-tab-btn active" data-target="tab-exchange">Exchange</button>
-            <button class="cmd-tab-btn" data-target="tab-entra">Entra ID</button>
-            <button class="cmd-tab-btn" data-target="tab-intune">Intune</button>
-            <button class="cmd-tab-btn" data-target="tab-diagnostics">Local</button>
-          </div>
-        </h2>
+      <!-- Right Column: Interactive Hub -->
+      <div class="reference-interactive-hub" style="display: flex; flex-direction: column; gap: 24px; min-width: 0;">
+        
+        <!-- SECTION 1: Command Cheat Sheet -->
+        <details class="interactive-accordion" open>
+          <summary class="accordion-header">
+            <span><i class="fa-solid fa-terminal" style="color: var(--accent-color, #a855f7);"></i> Command Cheat Sheet</span>
+            <i class="fa-solid fa-chevron-down accordion-icon"></i>
+          </summary>
+          <div class="accordion-content" style="padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.05); margin-top: 16px;">
+            <div class="command-tabs" style="display: flex; gap: 10px; font-size: 0.85rem; margin-bottom: 20px;">
+              <button class="cmd-tab-btn active" data-target="tab-exchange">Exchange</button>
+              <button class="cmd-tab-btn" data-target="tab-entra">Entra ID</button>
+              <button class="cmd-tab-btn" data-target="tab-intune">Intune</button>
+              <button class="cmd-tab-btn" data-target="tab-diagnostics">Local</button>
+            </div>
         
         <div class="command-tab-content active" id="tab-exchange" style="flex: 1; overflow-y: auto;">
           <div class="command-block">
@@ -399,10 +513,27 @@
             </div>
           </div>
 
-        </div>
+          </div>
+        </details>
 
-      </section>
+        <!-- SECTION 2: Ready-to-Go Scripts -->
+        <details class="interactive-accordion">
+          <summary class="accordion-header">
+            <span><i class="fa-solid fa-file-code" style="color: #10b981;"></i> Ready-to-Go Scripts</span>
+            <i class="fa-solid fa-chevron-down accordion-icon"></i>
+          </summary>
+          <div class="accordion-content" style="padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.05); margin-top: 16px;">
+            <div class="script-search-wrapper" style="position: relative; margin-bottom: 20px;">
+              <i class="fa-solid fa-search" style="position: absolute; left: 16px; top: 16px; color: var(--text-secondary);"></i>
+              <input type="text" id="script-search-input" placeholder="Search for a script (e.g., Clear Teams Cache)..." style="width: 100%; padding: 14px 16px 14px 44px; border-radius: 8px; border: 1px solid var(--card-border); background: rgba(0,0,0,0.2); color: white; font-family: inherit; font-size: 1rem;">
+            </div>
+            <div id="script-repository-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(400px, 1fr)); gap: 16px; max-height: 600px; overflow-y: auto; padding-right: 8px;">
+              <!-- Scripts injected by JS -->
+            </div>
+          </div>
+        </details>
 
+      </div>
     </main>
     </div> <!-- End reference-content-wrapper -->
   </div>
